@@ -137,8 +137,9 @@ rep(c("a","b"),2) #("a","b")를 2번 반복
 - ex3. (1,1,2,3,3,4)를 작성하는 rep 문장을 작성하라. 
 
 ```{r}
-
-
+var1<-c(1,2,3,4)
+var2<-rep(var1,c(2,1,2,1))
+var2
 ```
 
 ## 2.4 paste 함수
@@ -177,7 +178,10 @@ paste0(letters,1:26)
 
 
 ```{r}
-
+var1<-1:10
+var2<-c("st","nd","rd",rep("th",7))
+var3<-paste0(var1,var2)
+var3
 
 ```
 
@@ -187,18 +191,15 @@ paste0(letters,1:26)
 - TRUE(1), FALSE(0)로 반환
 
 ```{r}
-
 10>3 # 10은 3보다 크므로 TRUE
-
 3>10 #FALSE
-
-a<-10
-b<-1+9
 ```
 
 ```{r}
-a==b #a와 b 모두 10 으로 같음(==)  TRUE
+a<-10
+b<-1+9
 
+a==b #a와 b 모두 10 으로 같음(==)  TRUE
 a!=b # a와 b는 같지 않음(!=) 이 아니므로 FALSE
 
 !TRUE #TRUE가 아님(!)은 FALSE
@@ -211,9 +212,7 @@ a!=b # a와 b는 같지 않음(!=) 이 아니므로 FALSE
 a<-10
 b<-1+9
 10>3 & a==b # TRUE and TRUE 이므로 TRUE
-
 3>10 & a==b # FALSE and TRUE 이므로 FALSE (and는 둘 중 하나라도 FALSE가 있으면 FALSE)
-
 3>10 | a==b # FALSE or TRUE 이므로 TRUE (or은 둘중 하나가 TRUE이므로 TRUE)
 ```
 
