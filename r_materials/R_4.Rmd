@@ -193,14 +193,18 @@ rowMeans(m1) # 행별 mean
   
 
 ```{r}
-apply(m1,2,sum) #colSums(m1)
+apply(m1,2,sum) #colSums(m1) #important
 apply(m1,1,sum) #rowSums(m1)
 
 ```
 
 - ex2. matrix(c(1:4, 1, 6:8), nrow = 2)로 행열 m을 생성하고 행, 열별로 평균을 구하여라. 
    
-```{r}  
- 
+```{r}
+m=matrix(c(1:4, 1, 6:8), nrow = 2)
+apply(m,1,mean) # Column
+apply(m,2,mean) # Row
+colMeans(m)
+rowMeans(m)
 ```
 
