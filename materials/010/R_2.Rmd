@@ -292,7 +292,6 @@ sort(a) #default 는 오름차순
 b<--10:-1 
 b
 sort(a,decreasing=TRUE)+b #vector들 간의 사칙연산은 길이가 같아야 가능함
-
 ```
 
 - ex6.다음과 같은 10개의 데이터에 대해서 총합, 평균, 표준편차 값을 구하시오. 
@@ -300,15 +299,24 @@ sort(a,decreasing=TRUE)+b #vector들 간의 사칙연산은 길이가 같아야 
      (70,60,55,75,95,90,80,80,85,100)
      
 ```{r}
-
-
+var1<-c(70,60,55,75,95,90,80,80,85,100)
+sum(var1)
+mean(var1)
+sd(var1)
 ```
 
 - ex7. 위 데이터를 오름차순으로 sorting하여 순위 5번째 값의 원래 a 벡터의 위치값을 찾아내시오.
 ```{r}
-
-
-
+var2<-sort(var1)
+var2$ix[5]
+```
+```{r}
+var1
+names(var1)
+names(var1)<-1:10
+var1
+names(var1)<-NULL
+var1
 ```
 
 
@@ -351,7 +359,7 @@ mean(c(NaN, 2,3,NaN, -1),na.rm=TRUE)
 - ex8. (1,2,3,4,5)와 (NA,2,3,NA,-1)를 더하면 ? 
      
 ```{r}
-
-
+a<-c(1,2,3,4,5)
+a+c(NA,2,3,NA,-1)
 ```
     
