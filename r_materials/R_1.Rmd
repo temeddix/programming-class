@@ -1,0 +1,32 @@
+---
+title: "R install과 기본사항"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL','C')
+```
+
+## R Install 
+
+R 다운로드 : <https://cran.r-project.org/mirrors.html>
+
+RStudio 다운로드 :  <https://rstudio.com/products/rstudio/download/>
+
+```{r cars}
+summary(cars)
+```
+
+## R 언어의 기본사항 
+
+- 대문자/소자 구분
+- history 기능 : 키보드에 있는 화살표 위/아래로 전에 입력한 명령어를 찾을 수 있음
+- 함수에 대한 help 명령어 : ?함수이름 ex) ?summary
+
+```{r }
+?summary
+```
+ 
