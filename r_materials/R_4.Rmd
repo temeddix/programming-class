@@ -20,7 +20,7 @@ Sys.setlocale('LC_ALL','C')
       (열기준, 행기준 차이 살펴보기)
 ```{r}
 matrix(1:15,nrow=3,ncol=5) #  열기준
-matrix(seq(1,15),nrow=3,ncol=5,byrow=T) #행기준 
+matrix(seq(1,15),nrow=3,ncol=5,byrow=T) #행기준, `byrow` makes a big difference
 ```
 
 - Q2.c(2,4,6,8,10,12,14,16,18,20)을 열기준으로 2x5 행렬을 만드시오. 
