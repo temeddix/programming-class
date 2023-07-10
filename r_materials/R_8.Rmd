@@ -1,0 +1,200 @@
+---
+title: "8.Function & Random number"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL',"C")
+```
+
+ 
+
+## 8.1 Function    
+
+- 반복적인 문장을 수행해야할 때 함수(function)로 만들어 함수를 호출
+
+  fct_name<-function(arg_1, arg_2, ...){
+   ....
+   return(output)
+   }
+
+- fct_name : function의 이름, function 호출시 fct_name(arg_1, arg_2...)로 함 
+
+- function(arg_1, arg_2,...) : arg_1, arg_2,... 등은 function 안에서 사용하는 input 인자 
+
+- return(output) : function을 통해 얻게 되는 output 인자 
+
+Q1. 두개의 숫자 a,b의 합을 구하는 함수는?
+   
+  함수 이름 : sum_two 
+  
+  input arg : 2개의 숫자, a, b
+  
+  함수 내용 : rst<-a+b
+  
+  output 결과 : rst
+
+```{r}
+ 
+sum_two<-function(a,b){
+  rst<-a+b
+  return(rst)
+}
+
+#sum_two(a=3, b=5)
+#sum_two(5,3)
+c<-sum_two(a=3,b=5)
+c 
+```
+ 
+ 
+Q2. sum_two 함수에서 두 수의 차도 같이 output 결과로 return 하게 하는 함수는?
+  
+  output 결과변수가 2개 이상일 때는 list로 묶음 
+
+```{r}
+ 
+sum_two<-function(a,b){
+  rst1<-a+b
+  rst2<-a-b
+  return(list(rst1, rst2))
+}
+
+#sum_two(a=3, b=5)
+c<-sum_two(a=3,b=5)
+c
+c[[2]]
+
+```
+
+
+
+ex.두수를 입력받아 +,-,X,/ 사칙연산이 가능한 함수를 만들어 보세요.
+```{r}
+
+```
+
+
+
+
+Q3. sum_two 함수에서 a의 값을 주지 않아도 default로 항상 1의 값을 갖게 하려면?
+
+  input arg의 a=1로 setting
+```{r}
+ sum_two<-function(a=1,b){
+  rst1<-a+b
+  rst2<-a-b
+  return(list(out1=rst1, out2=rst2))
+}
+
+#sum_two( b=5) 
+sum_two(a=10,b=5) # a=1이라는 default의 값이 input 숫자 10으로 변경됨 
+#sum_two(b=5, a=10) #변수의 순서를 바꾸어도 상관없음 
+#c$out1
+#c$out2
+
+```
+
+ex1. 어떤 벡터형 숫자들을 input으로 받아 짝수만 벡터로 return해 주는 함수를 작성하라.
+```{r} 
+
+```
+ 
+
+ex2. 어떤 벡터형 숫자들을 input으로 받아 평균, 분산, 표준편차, 표본평균에 대한 표준오차(=sigma/sqrt(n))를 return 하는 함수를 작성하라.
+```{r}
+ 
+```
+ex3. 어떤 문자를 입력받아 거꾸로 재배열하는 함수를 작성하라. ex) abc 입력하면 cba return
+
+    - strsplit, rev 사용
+```{r} 
+ 
+
+```
+
+## 8.2 Random Number
+
+- 통계적 확률 분포를 따르는 랜덤 넘버를 발생 (n은 랜넘 넘버 개수) 
+
+  Uniform dist'n  : runif(n, min = 0, max = 1)
+  Normal dist'n   : rnorm(n, mean = 0, sd = 1)
+  Binomial dist'n : rbinom(n, size, prob)
+  Poission dist'n : rpois(n, lambda)
+  
+- ex) Unif(0,1)를 따르는 1000의 랜덤 넘버를 발생시켜 평균과 분산을 계산하시오. 
+
+```{r} 
+ 
+
+```
+
+
+```{r} 
+#install.packages("ggplot2")
+library(ggplot2)
+
+RN<-rnorm(100,3,2)
+d_RN<-data.frame(RN)
+
+ggplot(d_RN,aes(x=RN))+ geom_histogram() #histogram
+ggplot(d_RN,aes(y=RN))+ geom_boxplot() #boxplot
+
+RN_x<-RN
+RN_y<-rnorm(100,5,3)
+m_RN<-data.frame(RN_x,RN_y)
+ggplot(m_RN, aes(x=RN_x, y=RN_y)) + geom_point() #scatter plot 
+```
+
+## 8.3 확률분포 
+
+- 예를들어, normal 분포인 경우
+
+   | 메소드 | 기능                 |
+   |--------|----------------------|
+   | dnorm  | 확률밀도함수         |
+   | pnorm  | 누적분포함수         |
+   | qnorm  | 누적분포함수의 역함수|
+   | rnorm  | 랜덤표본생성         |
+   
+- 표준정규분포 Z에서 P(Z<=1.65)의 값을 찾아라.
+```{r}  
+pnorm(1.65)
+```
+
+-  P(Z>=1.65)의 값을 찾아라.
+
+```{r}  
+1-pnorm(1.65)
+pnorm(1.65, lower.tail=FALSE)
+```
+
+ 
+- P(-1.96 < Z < 1.96)의 값을 찾아라.
+
+```{r}  
+pnorm(1.96)-pnorm(-1.96)
+```
+
+-  P(Z<z)=0.95가 되게 하는 z값을 찾아라.
+
+```{r}  
+qnorm(0.95)
+```
+
+
+-  표준정규분포, 자유도 4 인 t분포, 자유도 30 인 t분포의 pdf를 한 그래프에 그려라.
+
+```{r}  
+ls<-seq(-4,4,length=2000)
+zd<-dnorm(ls)
+td1<-dt(ls,df=4)
+td2<-dt(ls,df=30)
+m_zd<-data.frame(ls,zd,td1,td2)
+gg<-ggplot(m_zd, aes(x=ls, y=zd))  + geom_line()
+gg+geom_line(aes(ls,td1), color="red",linetype = 6) +geom_line(aes(ls,td2), color="green",linetype=3)
+```
+

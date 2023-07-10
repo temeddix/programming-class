@@ -1,0 +1,279 @@
+---
+title: "6.Data Frame"
+output:
+  html_document:
+    df_print: paged
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale('LC_ALL','C')
+```
+ 
+## 6.1 Data Frame 생성 
+
+- 행과 열로 되어 있는 표와 같은 형식 : 열은 벡터이자 변수로 인식
+
+- 열은 여러 데이터 형식들로 구성됨
+
+- 각 열의 길이가 동일해야 함  
+
+- data.frame() 함수로 생성 
+
+- Q1. A변수는 a,b,c,d,e,  B변수는 1,2,3,4,5로 이루어진 dataframe을 생성하시오. 
+```{r}
+d1<-data.frame(A=letters[1:5], B=1:5,stringsAsFactors=TRUE) #A,B변수 : A는 문자, B는 숫자형 
+d1
+```
+
+```{r}
+str(d1) #data frame structure 
+```
+ 
+
+- Q2. A와 B의 변수 이름을 바꾸시오.
+
+```{r}
+names(d1)
+names(d1)<-c("Var1","Var2")
+str(d1)
+```
+
+```{r}
+names(d1)[2]<-c("B") #2번째 변수 이름만 바꾸기 
+str(d1)
+```
+
+- ex1. 다음의 표를 data frame으로 만들어 출력해 보세요. ("과일"문제) 
+
+  |prod       | price| sales |
+  |-----------|------|-------|
+  | apple     | 1800 | 24    |
+  |strawberry | 1500 | 38    |
+  |watermelon | 3000 | 13    |
+  
+  
+
+```{r}
+
+```
+  
+## 6.2 Indexing 방법
+
+
+- matrix indexing 방법과 동일함 : [행, 열]
+
+- 변수 이름을 이용할 때는 dataframe$변수명 
+
+
+```{r}
+d1
+d1[1,] #1행 
+d1[,1] #1열 ,즉 Var1 변수 전체
+d1$Var1
+d1[,"Var1"]
+```
+
+
+```{r}
+d1$B   #B 변수 전체 
+d1[c(1,3,5),] #1,3,5번째 행 
+d1[c(1,3,5),1] #1,3,5번째 행의 Var1 변수값  또는, d1$Var1[c(1,3,5)] 
+d1[c(1,3,5),"Var1"]
+d1$Var1[c(1,3,5)]
+```  
+
+
+```{r}
+d1
+d1[-1,] #1행 제외한 나머지 
+d1[,-1] #1열 제외한 나머지 
+```
+
+
+- ex2. 위 "과일" 문제에서 가격과 판매량의 평균을 구하시오. 
+
+```{r}
+ 
+
+
+```
+
+
+- ex2_1. 다음의 자료를 dataframe col_df으로 만들고 col1이 4인 경우의 자료를 선택하는 프로그램을 작성하라. 
+
+
+  |col1    | col2 | col3 |
+  |--------|------|------|
+  | 1      | 4    |   7  |
+  | 4      | 5    |   8  |
+  | 3      | 6    |   9  |
+  | 4      | 7    |   0  |
+  | 5      | 8    |   1  |
+
+```{r}
+ 
+
+
+```
+
+- ex2_2. 위 col_df에서 col1이 4인 경우의 행 전체를 제거하는 프로그램을 작성하라. 
+
+```{r}
+ 
+
+```
+- ex2_3.위 데이터프레임 자료형 예제에서 처음 3개만 선택하는 프로그램을 작성하라
+
+```{r} 
+
+```
+
+
+## 6.3 변수 추가 및 삭제 
+
+- 변수 추가 : dataframe$추가변수명 <- data vector 
+
+- 변수 제거 :  dataframe$변수 <-NULL
+
+```{r}
+d1$Var3<-c(rep(TRUE,3), rep(FALSE,2))
+d1
+d1$B<-NULL  # d1<-d1[,-2]
+d1
+d1<-subset(d1, select=-Var1) # Var1 변수 제거
+```
+
+- ex3. 위 "과일" 문제에서 총 판매액(가격x판매량)을 추가 하시오. 
+
+```{r}
+ 
+```
+
+## 6.4 attach , detach 
+
+- data frame의 각 열로 사칙연산 등 함수를 적용하기 위해서는 dataframe$column 으로 "$"를 사용해야 함
+  
+- attach : data frame의 각 열을 개별적으로 사용할 수 있게 해줌 , 즉, "dataframe$" 을 생략 가능
+
+- detach : attach 의 반대 개념으로 다시 원래 상태로 돌아감
+
+- Q3.cars라는 데이타를 attach하여 각 변수의 통계를 내어보자. 
+
+```{r}
+head(cars) # R 내부에 있는 data , speed (of cars) , dist (stopping distance)
+head(cars$dist/cars$speed) # data frame의 각 열을 지칭할 때 cars$ 를 사용
+
+```
+
+```{r}
+#dist<-c(1:10)
+#speed<-c(101:110)
+attach(cars) # cars data frame을 attach
+head(dist/speed)
+mean(speed)
+mean(dist)
+detach(cars) # attach 해제
+
+#mean(speed) #error 
+
+```
+
+
+## 6.5 reading & writing 
+
+- read.table, read.csv 로 data 읽기
+
+- read.table("file path",header=FALSE, sep = " ", skip=0, row.names)  
+
+  "file path" 폴더의 구분자는 "/" ex) c:/R/ex1.txt 
+  
+  header=FALSE (default) 파일의 첫 행이 변수 이름일 경우는 header=TRUE
+  
+  sep=" " (default) 열의 구분자 , 콤마(,)일 경우 sep=","
+  
+  skip=0  몇 번째 행을 skip하고 읽을 것인지 결정 , skip=1이면 첫번째 행을 skip하고 읽음 
+  
+  row.names 행의 이름 vector , 행의 이름이 있을 때 지정 가능. row.names=1은 첫번째 열이 행의 이름을 알려줌 
+  
+- read.csv("file path",header=TRUE, skip=0 ) : read.table에서 sep=","인 경우
+
+- write.table(dataframe, "file path",sep=" ",row.names = TRUE   )
+
+  R의 dataframe을 "file path"에 저장하고자 할 때, 기타 다른 옵션들은 default 에 해당됨
+  
+- write.csv(dataframe, "file path",row.names = TRUE ) 
+
+-Q4. cars 데이타를 변수 구분자 space, row name이 포함되게 cars.txt에 저장하시오. 
+```{r}
+head(cars)
+```
+
+```{r}
+getwd()
+#setwd("c:/jonghee/y_stat/R")
+#getwd()
+```
+
+```{r}
+write.table(cars, "cars.txt", sep=" " ) #구분자 space, row name 포함
+```
+
+-Q5. cars 데이타를 변수 구분자 space, row name이 포함되지 않게 cars1.txt에 저장하시오. 
+```{r}
+write.table(cars, "cars1.txt",sep=" " , row.name=FALSE) #구분자 space, row name 미포함
+```
+
+-Q6. cars 데이타를 변수 구분자 ",", row name이 포함되지 않게 cars1.csv에 저장하시오. 
+```{r}
+write.csv(cars, "cars1.csv", row.names=FALSE) #구분자 ",", row name 미포함 
+```
+
+
+-Q7. cars1.csv을 읽어오시오. 
+```{r}
+j_cars_1<- read.csv("cars1.csv") #header 포함, 구분자 ",", row name 포함 
+head(j_cars_1)
+```
+
+```{r}
+j_cars_2<- read.csv("cars1.csv", header=FALSE, skip=1) #header 미포함, 2번째 row 부터 읽기
+head(j_cars_2)
+```
+
+-Q8. cars.txt을 읽어오시오. 
+```{r}
+j_cars_3<- read.table("cars.txt",skip=1, sep=" ") #2번째 row 부터 , 구분자 space, row name도 변수로 읽혀짐 
+head(j_cars_3)
+```
+
+```{r}
+j_cars_4<- read.table("cars.txt",skip=1, row.names=1, sep=" ") #첫번째 열을 row name으로 
+head(j_cars_4)
+```
+
+```{r}
+nrow(cars)
+```
+
+
+```{r}
+a<-paste0(rep(letters,2),1:52)
+a
+```
+
+```{r}
+j_cars_5<- read.table("cars1.txt", row.names=a[1:50], header=TRUE, sep=" ") #row name을 새로 정해서 
+head(j_cars_5)
+j_cars_5["a1",]
+```
+```{r}
+row.names(j_cars_5)[1]<-"A01"
+head(j_cars_5)
+```
+
+- ex4. 위 "과일" 문제의 최종 data frame을 csv 파일로 내보내기를 하시오. 
+
+```{r} 
+
+
+```

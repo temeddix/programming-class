@@ -1,0 +1,322 @@
+---
+title: "7.Looping"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)  
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
+#Sys.setlocale('LC_ALL','C')
+```
+
+## 7.1 조건문 : if / ifelse  
+
+- if 문장 다음의 조건이 TRUE이면 수행, FALSE이면 다음 조건문 else if로, 
+  모든 문장이 FALSE이면 마지막 else의 문장 수행
+  
+- 조건문은 괄호 () 안에 , 수행할 문장은  {} 안에 사용
+
+  if (조건문) { do } else if (조건문) { do } .... else { do }
+
+- 가장 간단한 사용예 : if (조건문) {do} else {do}
+
+Q1. 돈이 있으면 택시를 타고, 돈이 없으면 걸어간다.
+```{r}
+money<-TRUE
+ 
+if (money)  "택시를 탄다."   else  "걸어간다."  
+if (money) { "택시를 탄다."}   else  {
+  "걸어간다."  }
+ifelse(money ,  "택시를 탄다."  , "걸어간다.")
+```
+
+Q2.돈이 3000원 이상 있거나 카드가 있다면 택시를 타고 그렇지 않으면 걸어가라.
+```{r}
+money<-4000
+card<-FALSE 
+
+if (money>=3000 | card) { "택시를 탄다." } else {
+   "걸어간다."  }
+
+ifelse(money>=3000 | card ,  "택시를 탄다."  , "걸어간다.")
+```
+
+Q3.만약 주머니에 돈이 있으면 택시를 타고, 없으면 걸어가라.
+```{r}
+pocket <-c("paper","cellphone","money")
+# %in% 다중 선택지에서 searching 할때 사용
+#if(sum("money"==pocket)>=1) 
+if ("money" %in% pocket) {
+   print("택시를 탄다.") ; a<-1
+   } else {
+   print("걸어간다." )
+   a<-0 
+  }
+a
+```
+
+```{r}
+ifelse(sum("money"==pocket)==1,  "택시를 탄다."  , "걸어간다.")
+ifelse("money" %in% pocket,  "택시를 탄다."  , "걸어간다.")
+```
+
+```{r}
+a<-ifelse("money" %in% pocket,  { "택시를 탄다." ;  1}  , { "걸어간다." ; 0})
+a
+a<-ifelse("money" %in% pocket,  {   1;"택시를 탄다."}  , { "걸어간다." ; 0})
+a
+```
+
+Q4.score가 60 이상일 경우 message에 문자열 'success', 아닐 경우 'failure'를 대입하라.
+```{r}
+score<-50
+if (score>=60) {message<-'success'} else { message<-'failure'}
+message
+
+message<-ifelse(score>=60,  'success' , 'failure')
+message
+
+message<- if (score>=60) { 'success'} else {  'failure'}
+message
+```
+
+- else if 사용예 
+
+Q5.만약 주머니에 돈이 있거나, card가 있으면 택시를 타고 message에 "success"가 뜨게 하고, 
+그렇지 않으면 걸어가고 "failure"라는 message가 뜨게 하라.
+```{r}
+
+pocket <-c("paper","cellphone","money1")
+card<-TRUE
+if ("money" %in% pocket)  { 
+  print("택시를 탄다.") 
+  message<-"success1"
+  } else if (card)   { 
+  print("택시를 탄다.") 
+  message<-"success2" 
+  } else  
+  { print("걸어간다.") ; message<-"failure" }
+
+message
+
+```
+ex0. 한 숫자를 입력받아, 0보다 작은 숫자이면 -1을 곱해 0보다 큰 숫자로 만들어라.
+
+    - readline 사용
+    - if문장 사용
+     
+```{r}
+ 
+
+```
+
+
+
+
+## 7.2 while 문장
+
+- 어떤 조건이 만족되면 반복적인 명령어를 수행
+
+  while(조건문) { do }
+  
+- 어떤 조건이 만족되지 않아야만 loop를 벗어남 
+
+
+
+Q6.열번찍어 안 넘어가는 나무 없다.
+나무를 찍은 횟수(treeHit) 가 10 보다 작으면 하나씩 증가
+만약, treeHit이 10번이면 print("나무가 넘어간다.")
+```{r}
+treeHit<-0
+
+while (treeHit<10)
+  {
+  treeHit<-treeHit+1
+  if(treeHit==10) print("나무가 넘어간다.")
+  }
+treeHit 
+```
+
+Q7.앞의 문제에서 treeHit이 10보다 작으면 treeHit의 개수를 paste0를 이용하여 "나무를 ?번 찍었다."를 print 하여라.
+
+```{r}
+treeHit<-0
+while (treeHit<10)
+  {
+treeHit<-treeHit+1
+#1
+print(paste0("나무를 ",treeHit,"번 찍었다."))
+#2
+#print(sprintf("나무를 %d 번 찍었다.", treeHit))
+#3
+#cat("나무를",treeHit,"번 찍었다.","\n")
+if (treeHit==10 ) print("나무가 넘어간다.")
+}
+```
+
+Q8. 1부터 10까지의 숫자 중에서 홀수만 출력하라. (while 문장 이용)
+
+```{r}
+a<-0
+while (a<10)
+{
+    a<-a+1
+    if (a%%2 == 1 ) print(a)  # a%%b는 a를 b로 나누었을 때 나머지, a%/%b 는 몫
+}
+```
+
+```{r}
+a<-1
+while (a<11)
+{
+    if (a%%2 == 1 ) print(a)  # a%%b는 a를 b로 나누었을 때 나머지, a%/%b 는 몫
+    a<-a+1
+}
+```
+
+```{r}
+a<-0
+while (a<10)
+{
+    a<-a+1
+    if (a%%2 == 0 ) {}  
+    else print(a)  
+}
+```
+
+```{r}
+a<-0
+while (a<10)
+{
+    a<-a+1
+    if (a%%2 == 0 )   next  # continue의 의미 
+    print(a)
+}
+```
+ 
+- break 문장 : while 무한 루프에서 벗어날 수 있음 
+
+```{r}
+coffee <-10
+money <- 300
+while (money)
+{
+  print("돈을 받았으니 커피를 줍니다.")
+  coffee <- coffee -1
+  print(paste0("남은 커피의 양은 ", coffee,"개입니다." ))
+  if (coffee==0)  { print("커피가 다 떨어졌습니다. 판매를 중지합니다.") 
+  break }
+} 
+
+```
+
+ex1. while 문장을 사용하여 1부터 1000까지의 자연수 중 3의 배수의 합을 구해보시오. 
+
+```{r} 
+  
+
+```
+ex2. 1부터 5까지의 숫자를 입력받아, 별 계단을 만들려고 한다. 
+예를들어, 3을 입력받으면, 
+* 
+* * 
+* * * 
+이 출력되도록 한다. 
+     - readline, cat , while 문장을 사용한다. 
+
+```{r} 
+ 
+ 
+```    
+
+## 7.3 for 문장
+
+- 반복적인 명령을 수행
+  
+
+  for (value in vector) { do }
+ 
+
+Q9. 1~10까지의 합을 구하시오.
+```{r}
+total<-0 #초기화 
+for(i in 1:10) 
+{
+  total<-total+i
+}
+total
+```
+
+Q10. 60점 이상인 합격인 학생들에게만 print("몇번 학생 축하합니다. 합격입니다.") 문장을 프린트하라.
+
+```{r}
+marks<-c(90,25,67,45,80)
+id<-0
+for (i in marks)
+{
+  id<-id+1
+  if(i<60) {next} 
+  #1
+  print(paste0(id, "번 학생 축하합니다. 합격입니다."))
+  #2
+  #print(sprintf("%d번 학생 축하합니다. 합격입니다.", id))
+  #3
+  #cat(id,"번 학생 축하합니다. 합격입니다.","\n")
+}
+
+```
+
+```{r}
+marks<-c(90,25,67,45,80)
+for (i in 1:length(marks))
+{
+  if(marks[i]<60) {next} 
+  print(paste0(i, "번 학생 축하합니다. 합격입니다."))
+}
+
+```
+
+```{r}
+marks<-c(90,25,67,45,80)
+seq_along(marks)
+```
+
+```{r} 
+marks<-c(90,25,67,45,80) 
+for (i in seq_along(marks))
+{ 
+  if(marks[i]<60) {next} 
+  print(paste0(i, "번 학생 축하합니다. 합격입니다."))
+}
+
+```
+ex3. 위 while 문제의 3의 배수의 합 문제를 for 문장을 이용해서 구해보자. 
+
+```{r} 
+
+
+```
+
+ex4. A학급에 총 10명의 학생이 있다. 이 학생들의 중간고사 점수는 다음과 같다. 
+for 문장을 사용하여 A학급의 평균과 표준편차를 구해 보자. (for문장 사용)
+
+70,60,55,75,95,90,80,80,85,100
+
+```{r} 
+
+
+```
+
+ex5. 다음은 A학급 학생의 점수이다. 50점 이상 점수의 총합을 구해보자. (for 문장 사용)
+
+20,55,67,82,45,33,90,87,100,25
+
+
+```{r}
+ 
+
+```
+ 
+    
