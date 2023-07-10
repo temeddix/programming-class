@@ -21,12 +21,15 @@ Sys.setlocale('LC_ALL','C')
 
 - Q1. A변수는 a,b,c,d,e,  B변수는 1,2,3,4,5로 이루어진 dataframe을 생성하시오. 
 ```{r}
-d1<-data.frame(A=letters[1:5], B=1:5,stringsAsFactors=TRUE) #A,B변수 : A는 문자, B는 숫자형 
+d1<-data.frame(A=letters[1:5], B=1:5,stringsAsFactors=TRUE) #A,B변수 : A는 문자, B는 숫자형. Giving `stringsAsFactors`, it takes strings as factors, whose deafult value is FALSE. 
 d1
 ```
 
 ```{r}
-str(d1) #data frame structure 
+str(d1) #data frame structure
+nrow(d1)
+ncol(d1)
+summary(d1) # Remember the difference of `str` and `summary`
 ```
  
 
@@ -54,7 +57,14 @@ str(d1)
   
 
 ```{r}
-
+fruits<-data.frame(
+  prod=c('apple','strawberry','watermelon'),
+  price=c(1800,1500,3000),
+  sales=c(24,38,13),
+  stringsAsFactors = TRUE
+)
+fruits
+str(fruits)  # Structure, not string
 ```
   
 ## 6.2 Indexing 방법
@@ -67,10 +77,10 @@ str(d1)
 
 ```{r}
 d1
-d1[1,] #1행 
-d1[,1] #1열 ,즉 Var1 변수 전체
-d1$Var1
-d1[,"Var1"]
+d1[1,] #1행 # Row 1, all columns
+d1[,1] #1열 ,즉 Var1 변수 전체 # All rows, column 1
+d1$Var1  # Using dollar sign is the most common way
+d1[,"Var1"] # Not recommended but possible
 ```
 
 
@@ -87,15 +97,15 @@ d1$Var1[c(1,3,5)]
 d1
 d1[-1,] #1행 제외한 나머지 
 d1[,-1] #1열 제외한 나머지 
+summary(d1)
 ```
 
 
 - ex2. 위 "과일" 문제에서 가격과 판매량의 평균을 구하시오. 
 
 ```{r}
- 
-
-
+mean(fruits$price)
+mean(fruits$sales)
 ```
 
 
@@ -111,21 +121,30 @@ d1[,-1] #1열 제외한 나머지
   | 5      | 8    |   1  |
 
 ```{r}
- 
-
-
+col_df<-data.frame(
+  col1=c(1,4,3,4,5),
+  col2=c(4,5,6,7,8),
+  cole=c(7,8,9,0,1)
+)
+col_df[col_df$col1==4,]
+subset(col_df, col_df$col1==4)
+subset(col_df, col1==4)
+subset(col_df, col1==4, select=col2)
 ```
 
 - ex2_2. 위 col_df에서 col1이 4인 경우의 행 전체를 제거하는 프로그램을 작성하라. 
 
 ```{r}
- 
-
+col_df<-col_df[col_df$col1!=4,]
+col_df[!col_df$col1==4,]
+subset(col_df,col1!=4)
 ```
 - ex2_3.위 데이터프레임 자료형 예제에서 처음 3개만 선택하는 프로그램을 작성하라
 
-```{r} 
-
+```{r}
+col_df[1:3,] # In R, the range end in INCLUSIVE
+head(col_df,3) # 3 rows
+tail(col_df,3) # 3 rows
 ```
 
 
@@ -136,7 +155,7 @@ d1[,-1] #1열 제외한 나머지
 - 변수 제거 :  dataframe$변수 <-NULL
 
 ```{r}
-d1$Var3<-c(rep(TRUE,3), rep(FALSE,2))
+d1$Var3<-c(rep(TRUE,3), rep(FALSE,2)) # Just like `list`s
 d1
 d1$B<-NULL  # d1<-d1[,-2]
 d1
@@ -146,7 +165,8 @@ d1<-subset(d1, select=-Var1) # Var1 변수 제거
 - ex3. 위 "과일" 문제에서 총 판매액(가격x판매량)을 추가 하시오. 
 
 ```{r}
- 
+fruits$revenue<-fruits$sales*fruits$price
+fruits
 ```
 
 ## 6.4 attach , detach 
@@ -233,6 +253,7 @@ write.csv(cars, "cars1.csv", row.names=FALSE) #구분자 ",", row name 미포함
 ```{r}
 j_cars_1<- read.csv("cars1.csv") #header 포함, 구분자 ",", row name 포함 
 head(j_cars_1)
+# read.csv returns data.frame
 ```
 
 ```{r}
@@ -244,6 +265,7 @@ head(j_cars_2)
 ```{r}
 j_cars_3<- read.table("cars.txt",skip=1, sep=" ") #2번째 row 부터 , 구분자 space, row name도 변수로 읽혀짐 
 head(j_cars_3)
+# read.table also returns data.frame
 ```
 
 ```{r}
@@ -252,7 +274,7 @@ head(j_cars_4)
 ```
 
 ```{r}
-nrow(cars)
+nrow(cars) #
 ```
 
 
