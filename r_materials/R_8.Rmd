@@ -38,7 +38,6 @@ Q1. 두개의 숫자 a,b의 합을 구하는 함수는?
   output 결과 : rst
 
 ```{r}
- 
 sum_two<-function(a,b){
   rst<-a+b
   return(rst)
@@ -67,14 +66,35 @@ sum_two<-function(a,b){
 c<-sum_two(a=3,b=5)
 c
 c[[2]]
-
+unlist(sum_two(a=3,b=5))
 ```
-
+```{r}
+l1<-list(g1="ABC",g2=1:5,g3=rep("*",3))
+l1
+my_vec<-unlist(l1) # list to vector. string takes precedence over integer
+my_vec
+my_list<-list(my_vec)
+my_list
+```
 
 
 ex.두수를 입력받아 +,-,X,/ 사칙연산이 가능한 함수를 만들어 보세요.
 ```{r}
+cal1<-function(a,b){
+  return(list(a=a+b,b=a-b,c=a*b,d=a/b))
+}
+cal1(3,5)
+```
 
+```{r}
+cal2<-function(a,b,type){
+  if (type=='add') rst<-a+b
+  if (type=='minus') rst<-a-b
+  if (type=='multiply') rst<-a*b
+  if (type=='divide') rst<-a/b
+  return(rst) # Or, `return` can go directly inside `if`
+}
+cal2(3,5,'divide')
 ```
 
 
@@ -100,20 +120,40 @@ sum_two(a=10,b=5) # a=1이라는 default의 값이 input 숫자 10으로 변경�
 
 ex1. 어떤 벡터형 숫자들을 input으로 받아 짝수만 벡터로 return해 주는 함수를 작성하라.
 ```{r} 
-
+filter_even<-function(a){
+  return(a[a%%2==0])
+}
+input<-c(1,74,4,1,8,45,2341,33,4,6)
+filter_even(input)
 ```
  
 
 ex2. 어떤 벡터형 숫자들을 input으로 받아 평균, 분산, 표준편차, 표본평균에 대한 표준오차(=sigma/sqrt(n))를 return 하는 함수를 작성하라.
 ```{r}
- 
+input<-c(1,74,4,1,8,45,2341,33,4,6)
+calc<-function(a){
+  return(list(
+    mean=mean(a),
+    var=var(a),
+    std=sd(a),
+    stderr=sd(a)/sqrt(length(a))
+  ))
+}
+calc(input)
 ```
 ex3. 어떤 문자를 입력받아 거꾸로 재배열하는 함수를 작성하라. ex) abc 입력하면 cba return
 
     - strsplit, rev 사용
 ```{r} 
- 
-
+rev("hello")
+rev(c(1,2,3,4))
+strsplit("hello","")
+strsplit("hello","")[[1]]
+rev_str<-function(org_str){ # IMPORTANT
+  new_str<-paste0(rev(strsplit(org_str,"")[[1]]),collapse="")
+  return(new_str)
+}
+rev_str('hello')
 ```
 
 ## 8.2 Random Number
