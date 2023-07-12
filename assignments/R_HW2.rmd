@@ -1,0 +1,78 @@
+---
+title: "H.W.(R2) - 2016143084 김동현"
+output:
+  html_document:
+    df_print: paged
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+#Sys.setlocale('LC_ALL','C')
+```
+
+
+#### Q1. 양의정수 n을 입력받아 약수를 구하세요. 
+
+    - readline 사용, for 문장 구성
+    - 결과는 vector
+    
+```{r}
+n<-as.integer(readline("수를 입력하세요: "))
+divisors<-c()
+for (i in 1:n) {
+  if (n%%i==0) divisors<-c(divisors, i)
+}
+divisors
+```
+
+#### Q2. 1보다 큰 어떤 자연수 n이 소수라면 "소수입니다."를, 소수가 아니라면 "소수가 아닙니다."를 출력하세요.
+
+    - readline 사용
+    - 2부터 판별하는 수 전까지 나눠보고 나머지가 0이 안나온다면 소수로 정의
+    - while 문장으로 구성하며 while 문장안에서 break 사용
+      (나머지가 0이 나올때 break로 while 문장 벗어나기)
+    
+    
+```{r}
+n<-as.integer(readline("수를 입력하세요: "))
+i<-2
+is_prime<-TRUE
+while (i<n) {
+  if (n%%i==0) {
+    is_prime<-FALSE
+    break
+  }
+  i<-i+1
+}
+if (is_prime) print("소수입니다.") else print("소수가 아닙니다.")
+```
+
+
+#### Q3. 최소값을 찾는 함수를 작성하려 한다. min, sort와 같은 기존에 정의된 함수를 사용하지 말고, 벡터를 함수의 인자로 받고 최소값을 return 하는 함수를 작성하라. (for 제어문 사용)
+
+예를들어, 함수의 이름은 find_min 이고, v = c(17, 92, 18, 33, 58, 7, 33, 42) 벡터로 find_min(v) 했을 때 7이 return 되게 한다.
+    
+```{r}
+find_min<-function(a){
+  found<-a[1]
+  for (i in a){
+    if (i<found) found<-i
+  }
+  return(found)
+}
+v = c(17, 92, 18, 33, 58, 7, 33, 42)
+find_min(v)
+```
+
+#### Q4. 문자열 "green-red-black-white"를 m 변수에 입력받은 후 색깔 이름의 알파벳으로 정렬시켜 "black-green-red-white" 문자열이 되도록 하라.
+
+
+    - strsplit, paste 를 사용 
+ 
+    
+```{r}
+m<-"green-red-black-white"
+splitted<-strsplit(m, "-")[[1]]
+splitted<-sort(splitted)
+final<-paste(splitted, collapse="-")
+final
+```
