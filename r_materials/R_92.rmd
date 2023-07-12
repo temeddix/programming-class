@@ -41,7 +41,9 @@ exam %>% arrange(class,math)
 ex1. math 50점 이상이고 (english 90점이상 또는 science 60점 이상)인 학생들을 class, math 순서대로 정렬하되, class는 오름차순, math는 내림차순으로 정렬하세요.
 
 ```{r} 
-  
+exam %>%
+  filter(math>=50 & (english>=90 | science>=60)) %>%
+  arrange(class,desc(math))
 ```
 
 

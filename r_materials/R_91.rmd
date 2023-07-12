@@ -10,18 +10,21 @@ knitr::opts_chunk$set(echo = TRUE)
 Sys.setlocale('LC_ALL','C')
 ```
 
-- 주어진 데이터를 그대로 사용하지 않고 분석에 적합하게 가공하는 작업
+-   주어진 데이터를 그대로 사용하지 않고 분석에 적합하게 가공하는 작업
 
-- dplyr 패키지를 인스톨하여 사용
+-   dplyr 패키지를 인스톨하여 사용
 
-- install.packages("dplyr")
+-   install.packages("dplyr")
 
-Q1. csv_exam.csv 파일을 다운받아 데이터 프레임명 exam으로 read 한다.  (출처 : 쉽게 배우는 R 데이터 분석)
+Q1. csv_exam.csv 파일을 다운받아 데이터 프레임명 exam으로 read 한다. (출처 : 쉽게 배우는 R 데이터 분석)
 
-     - 첫행에 변수이름이 없음. 
-     - 변수이름은 차례대로 , "id","class","math","english","science" 
-     - class는 factor형으로 바꿈
-     
+```         
+ - 첫행에 변수이름이 없음. 
+ - 변수이름은 차례대로 , "id","class","math","english","science" 
+ - class는 factor형으로 바꿈
+ 
+```
+
 ```{r}
 exam<-read.csv("csv_exam.csv",header=FALSE,col.names=c("id","class","math","english","science"))
 exam$class<-as.factor(exam$class)
@@ -29,13 +32,16 @@ str(exam)
 head(exam)
 ```
 
-## 9.1 filter 
+## 9.1 filter
 
 Q2.dplyr의 filter를 이용해서 class가 1에 해당하는 학생들의 정보만 추출
 
-      - df name(대상) %>% filter(조건)
-      - %>% 단축키 Ctrl+Shift+M
-      
+```         
+  - df name(대상) %>% filter(조건)
+  - %>% 단축키 Ctrl+Shift+M
+  
+```
+
 ```{r}
 library(dplyr)
 exam %>% filter(class=='1') 
@@ -46,7 +52,7 @@ exam %>% filter(class=='1')
 Q3.class 3반이 아닌 데이터만 추출
 
 ```{r}
-exam %>%  filter(class!='3')
+exam %>% filter(class!='3')
 subset(exam, class!="3")
 ```
 
@@ -56,50 +62,52 @@ Q4. english 90점 미만이거나, science 50점 미만인 데이터 추출하�
 exam1<-exam %>% filter(english <90 | science<50)
 exam1
 subset(exam, english <90 | science<50)
+# IMPORTANT. Using `dpylr` and not using it will be on the exam.
 ```
 
+ex1. class가 1,3,5반에 해당하며 math가 50점 이상인 데이터 추출하여 english, science의 평균과 표준편차를 구하세요.
 
-ex1. class가 1,3,5반에 해당하며 math가 50점 이상인 데이터 추출하여 english, science의  평균과 표준편차를 구하세요.
+```         
+  - apply를 이용하여 english, science 을 한번에 통계량 구하기
+```
 
-      - apply를 이용하여 english, science 을 한번에 통계량 구하기
-      
 ```{r}
- 
+exam1<-exam %>% filter(class %in% c("1","3","5") & math >=50)
+# exam1<-subset(exam,class %in% c("1","3","5") & math >=50)
+apply(exam1[,c(4,5)],2,mean)  # '2' means fixing the column and calcualting along the rows
+apply(exam1[,c(4,5)],2,sd)
+# IMPORTANT: The relationship between `filter` and `subset`
 ```
- 
 
+## 9.2 select
 
-## 9.2 select 
+-   일부 변수만 추출하고자 할 때 사용.
 
+Q5.math만 추출하기
 
-- 일부 변수만 추출하고자 할 때 사용. 
-
-
-
-Q5.math만 추출하기 
-
-```{r} 
+```{r}
 exam %>% select(math)
 #subset(exam, select=math)
 ```
 
-Q6. english, science 만 추출 
+Q6. english, science 만 추출
 
 ```{r}
 exam %>% select(english,science)
 #subset(exam, select=c(english,science))
+# IMPORTANT: `select` doesn't require c(), but `subset` does.
 ```
 
-Q7. math와 english만 빼고 나머지 변수로 추출 
+Q7. math와 english만 빼고 나머지 변수로 추출
 
-```{r} 
+```{r}
 exam %>% select(-math, -english)
 #subset(exam, select=-c(math,english))
 ```
 
-Q8. class가 1,2반에 대해서 id, math만 출력하기 
+Q8. class가 1,2반에 대해서 id, math만 출력하기
 
-```{r} 
+```{r}
 exam %>% 
   filter(class %in% c("1","2")) %>%
   select(id, math) 
@@ -108,14 +116,14 @@ exam %>%
          
 ```
 
-```{r} 
+```{r}
 #순차적으로 실행되므로, select에서 class가 선택되지 않아 filter에서 class를 사용하면 error 발생
 #exam %>% 
 #  select(id,math)  %>%
 #  filter(class %in% c("1","2"))
 ```
 
-```{r} 
+```{r}
 exam %>% 
   select(id,class,math)  %>%
   filter(class %in% c("1","2")) %>%
@@ -123,74 +131,101 @@ exam %>%
 ```
 
 Q9. math, english, science 3과목의 평균이 65점 이상인 데이타만 출력
-  
-    - 일부만 출력하기 : head (default 6row)
 
-```{r} 
+```         
+- 일부만 출력하기 : head (default 6row)
+```
+
+```{r}
 exam %>% 
   filter((math+english+science)/3>=65) %>% 
   tail
  
 ```
 
-*SQL
-create table exam1 as 
+\*SQL create table exam1 as
 
 select id, class, math from exam
 
 where class in ("1","3","5")
 
+exam1 \<- exam %\>% filter(class %in% c("1","3","5")) %\>% select(id, class, math)
 
-exam1 <- exam %>% filter(class %in% c("1","3","5")) 
-              %>% select(id, class, math)
-              
-exam1<-subset(exam,class %in% c("1","3","5"), select=c(id, class, math))
+exam1\<-subset(exam,class %in% c("1","3","5"), select=c(id, class, math))
 
-ex) ggplot2 패키지에 mpg 데이터가 있다. help에서 mpg 데이터를 조회하면 변수에 대한 설명이 되어있다. 
+ex) ggplot2 패키지에 mpg 데이터가 있다. help에서 mpg 데이터를 조회하면 변수에 대한 설명이 되어있다.
 
 Q1. mpg데이터에서 class(자동차 종류), cty(도시 연비) 변수를 추출해 새로운 데이터 mpg_data를 만드세요. 새로 만든 데이터의 일부를 출력해 두 변수로만 구성되어 있는지 확인하세요.
 
-Q2. 앞에서 추출한 데이터를 이용해 class(자동차 종류)가 "suv"인 자동차와 "compact"인 자동차 중 어떤 자동차의 cty(도시연비)가 더 높은지 평균을 구해서  알아보세요.
+Q2. 앞에서 추출한 데이터를 이용해 class(자동차 종류)가 "suv"인 자동차와 "compact"인 자동차 중 어떤 자동차의 cty(도시연비)가 더 높은지 평균을 구해서 알아보세요.
 
-Q3. mpg 데이터에서 class가 compact, suv 인 경우 Q2에서 구한 평균값보다 cty가 큰 경우에 manufacturer와 class 변수만 선택하여 mpg_cty데이터를 만드세요.
-mpg_cty 데이터에서 distinct를 이용해 manufacturer,class가 중복된 row가 없게(unique하게) 하세요.
+Q3. mpg 데이터에서 class가 compact, suv 인 경우 Q2에서 구한 평균값보다 cty가 큰 경우에 manufacturer와 class 변수만 선택하여 mpg_cty데이터를 만드세요. mpg_cty 데이터에서 distinct를 이용해 manufacturer,class가 중복된 row가 없게(unique하게) 하세요.
 
-```{r} 
-#Q1. 
+```{r}
+# `tibble` is something more better than `data.frame`.
 ```
 
-```{r} 
-#Q2.  
+```{r}
+#Q1.
+mpg_data=data.frame(mpg$class, mpg$cty)
 ```
 
-```{r} 
-#Q3.  
+```{r}
+#Q2.
+m1<-mean(mpg_data$cty[mpg_data$class=="compact"])
+m2<-mean(mpg_data$cty[mpg_data$class=="suv"])
+m1
+m2
+# tapply(mpg_data$cty, list(mpg_data$class), mean)
+# aggregate(mpg_data$cty, list(mpg_data$class), mean)
+aggregate(cty~class, data=mpg_data[mpg_data$class %in% c("compact","suv"),], mean)
+# aggregate(cty~class+...., data=mpg_data[mpg_data$class %in% c("compact","suv"),], mean)
+aggregate(cty~class, data=mpg_data, mean)
+# tapply(mpg_data$cty, list(mpg_data$class), mean)
+# aggregate(mpg_data$cty, list(mpg_data$class), mean)
+aggregate(cty~class, data=mpg_data[mpg_data$class %in% c("compact","suv"),], mean)
+# aggregate(cty~class+...., data=mpg_data[mpg_data$class %in% c("compact","suv"),], mean)
+aggregate(cty~class, data=mpg_data, mean)
 ```
 
+```{r}
+#Q3.
+#subset(mpg, (class=="compact"&cty>m1) | (class=="suv" & cty>m2), select=c(manufacturer, class))
+mpg_cty<-mpg %>%
+  filter((class=="compact" & cty>m1)
+         | (class=="suv" & cty>m2)) %>%
+  select(manufacturer, class)
+
+distinct(mpg_cty, .keep_all=TRUE)
+# mpg_cty[!duplicated(mpg_cty),]
+# unique(mpg_cty)
+```
 
 ex2. 다음의 데이터 프레임을 만들고, 답하라.
 
-      df<- data.frame(sex=c("M","F",NA,"M","F"),
-                      score=c(5,4,3,4,NA))
-  
-(1) is.na, filter을 이용해서 score가 NA 즉 결측치인것만 선택하라. 
-
-```{r}  
-
+```         
+  df<- data.frame(sex=c("M","F",NA,"M","F"),
+                  score=c(5,4,3,4,NA))
 ```
 
-(2) is.na, filter을 이용해서 score가 NA 즉 결측치가 아닌것만 선택하라. 
+(1) is.na, filter을 이용해서 score가 NA 즉 결측치인것만 선택하라.
 
-```{r}  
-```    
-     
-(3) is.na, filter을 이용해서 score와 sex가 NA 즉 결측치가 아닌것만 선택하라. 
+```{r}
+df %>% filter(!is.na(score) & !is.na(sex))
+```
 
-```{r}  
-```    
+(2) is.na, filter을 이용해서 score가 NA 즉 결측치가 아닌것만 선택하라.
 
-(4) na.omit()는 모든 변수에 결측치가 없는 데이터만 추출하는 함수이다. 이를 이용해 (3)을 수행하라. 
+```{r}
+na.omit
+```
 
-```{r}  
-```    
- 
+(3) is.na, filter을 이용해서 score와 sex가 NA 즉 결측치가 아닌것만 선택하라.
+
+```{r}
+```
+
+(4) na.omit()는 모든 변수에 결측치가 없는 데이터만 추출하는 함수이다. 이를 이용해 (3)을 수행하라.
+
+```{r}
+```

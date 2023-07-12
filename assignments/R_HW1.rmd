@@ -136,7 +136,7 @@ $$\left[\begin{array}{rrr}
 = \begin{bmatrix}9 \\ 8\end{bmatrix}$$
 
 ```{r}
-left<-matrix(c(3,1,1,2), nrow = 2, ncol = 2)
+left<-matrix(c(3,1,1,2), nrow = 2, ncol = 2)  # `byrow`
 final<-matrix(c(9,8), nrow=2, ncol=1)
 right<-solve(left,final)
 right
@@ -163,6 +163,7 @@ table(height_f)
 
 ```{r}
 data1<-subset(dat, height >= 66)
+# data1<-data[data$height>=66]
 nrow(data1)
 mean(data1$weight)
 sd(data1$weight)
@@ -178,4 +179,7 @@ sd(data1$weight)
 min_weight<-min(dat$weight)
 min_weight_index<-which(dat$weight==min_weight)
 dat$height[min_weight_index]
+# data[which(data$weight==min(data$weight),1]
+# data[which.min(data$weight),1]
+# data[which.max(data$weight),1]
 ```  
