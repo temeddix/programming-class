@@ -6,7 +6,7 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "C")
 ```
 
 
@@ -19,27 +19,34 @@ Sys.setlocale('LC_ALL','C')
   name, wife는 character, no.children, child.ages는 numeric
   
 ```{r}
-l1	<-	list(name="Fred",	wife="Mary",	no.children=3,	child.ages=c(4,7,9))
+# No quotes in keys
+l1 <- list(name = "Fred", wife = "Mary", no.children = 3, child.ages = c(4, 7, 9))
 l1
+l1$child.ages # Can use `$` sign to access
+l1$child.ages[1]
 ```
 
 
 - Q2. l2는 l1과 동일하나 요소들의 이름이 없게 만드시오.
    
 ```{r}
-l2	<-	list("Fred",	"Mary",	3,	c(4,7,9))
+l2 <- list("Fred", "Mary", 3, c(4, 7, 9))
 l2
+l2[[4]]
+l2[[4]][1]
 ```
  
 - Q3. 요소 이름 넣기, 지우기를 연습하시오.
 
 ```{r}
-names(l1) #list의 이름 return names()
-names(l2) 
-names(l2)<-names(l1) # names(l2)<-c("name","wife","no.children","child.ages") 와 동일 
+names(l1) # list<U+C758> <U+C774><U+B984> return names()
 names(l2)
-names(l1)<-NULL  #이름 없애기
+names(l2) <- names(l1)
+# Same as `names(l2)<-c("name","wife","no.children","child.ages")`
+names(l2)
+names(l1) <- NULL # Remove names
 names(l1)
+# Names can be assigned to lists, just like vectors
 ```
 
 - ex1. 다음의 리스트에서 각 요소에 이름을 차례대로 one, two, three로 바꾸시오. 
@@ -48,8 +55,8 @@ names(l1)
      
 
 ```{r} 
-ex1<-list(g1 = 1:10, g2 = "R Programming", g3 = "HTML")
-names(ex1)<-c("one","two","three")
+ex1 <- list(g1 = 1:10, g2 = "R Programming", g3 = "HTML")
+names(ex1) <- c("one", "two", "three")
 ex1
 ```
 
@@ -60,28 +67,29 @@ ex1
 
 ```{r}
 l1
-l1[[2]] #2번째 요소 
-l1[[4]][2] #4번째 요소의 2번째 값 
-l1[[4]][c(1,3)] #4번째 요소의 1번째,3번째 값 
-#l1[[c(1,2)]] # error, 한번에 여러개의 요소들을 선택할 수 없음 
+l1[[2]] # 2nd element
+l1[[4]][2] # 2nd value of 4th element
+l1[[4]][c(1, 3)] # 1, 3rd value of 4th element
+# l1[[c(1,2)]] # Error, cannot select multiple elements at once because of type
 ```
 
 - list$name : name이라는 요소 이름이 정해져 있을 때
  
 ```{r}
 l2
-l2$wife #wife 요소
-l2$child.ages[2] #child.ages 요소의 2번째 값 
-l2$child.ages[c(1,3)] #child.ages 요소의 1번째,3번째 값 
+l2$wife # wife element
+l2$child.ages[2] # 2nd value of child.ages element
+l2$child.ages[c(1, 3)] # 1, 3rd value of child.ages element
 ```
 
 
 - ex2. 위 ex1에서 one과 two의 길이(length)를 return 하시오. 
 
-```{r}  
+```{r}
+ex1
 length(ex1$one)
 length(ex1$two)
-nchar(ex1$two)
+nchar(ex1$two) # For length of a string
 ```
 
 
@@ -90,22 +98,24 @@ nchar(ex1$two)
 - Q4. l2에서 no.children의 숫자를 4로, child.ages를 (1,5,8,10)으로 변경하시오.
 
 ```{r}
-l2$no.children<-4
-l2$child.ages<-c(1,5,8,10)
+l2$no.children <- 4
+l2$child.ages <- c(1, 5, 8, 10)
 l2
 ```
 
 - Q5. l1과 l2를 합쳐 l3 만들어 보시오.
 
 ```{r}
-l3<-c(l1,l2)
-l3            #8개의 모임 
+l3 <- c(l1, l2) # Here, `c()` is not for a vector, but a list
+l3 # With 8 elements
+class(l3)
 ```
 
 - ex3. 위 ex1에서 four 라는 요소를 더 추가하고 "Python" 이라는 값을 갖도록 하시오. 
 
 ```{r} 
-
+ex1$four <- "Python"
+ex1
 ```
 
 - ex4. 아래 list를 생성하고 두번째 요소를 제거하시오. 
@@ -113,7 +123,9 @@ l3            #8개의 모임
  list(c("Red","Green","Black"), matrix(c(1,3,5,7,9,11), nrow = 2), list("Python", "PHP", "Java"))
 
 ```{r} 
-
+var1 <- list(c("Red", "Green", "Black"), matrix(c(1, 3, 5, 7, 9, 11), nrow = 2), list("Python", "PHP", "Java"))
+var1 <- var1[-2]
+var1
 ```
 
 - ex5. bl_type 변수에는 아래 벡터가 factor 형식으로 입력되어 있다. 레벨은 "A","B","AB","O" 이다. ("A","A","A","B","B","O","O","O","O","AB","AB","AB","AB","AB")
@@ -127,29 +139,40 @@ y 변수에는 1~14까지의 정수 sequence가 입력되어 있다.
     - tapply를 이용해서 sex 별 y값의 평균, 표준편차, 최소, 최대, 사분위수 등을 계산하여라. 
     - 또한, tapply에서 sex, bl_type별 y값의 평균값을 구하여라.
 ```{r}
-bl_type<-c("A","A","A","B","B","O","O","O","O","AB","AB","AB","AB","AB")
+bl_type <- c("A", "A", "A", "B", "B", "O", "O", "O", "O", "AB", "AB", "AB", "AB", "AB")
+sex <- factor(rep(c("f", "m"), each = 7), levels = c("f", "m"))
+y <- 1:14
+bl_type
+sex
+y
+
 table(bl_type)
-tapply(bl_type,bl_type,length)
+table(sex)
+table(bl_type, sex) # Really, a 'table'
+
+tapply(y, sex, mean)
+tapply(y, bl_type, mean)
 ```   
 
-sex variable is declared as `factor` type. Levels are "f" and "m".
+`sex` variable is declared as `factor` type. Levels are "f" and "m".
 
 ```{r}
-sex<-factor(rep(c("f","m"),each=7),levels=c("f","m"))
-sex
 table(sex, bl_type) # The first becomes row and the second becomes columns
-y<-1:14
-tapply(y,sex,sum)
-tapply(y,sex,mean)
-tapply(y,sex,var)
-tapply(y,sex,sd)
-tapply(y,sex,min)
-tapply(y,sex,max)
-tapply(y,sex,quantile)$F
-names(tapply(y,sex,quantile)$F)
-tapply(y,sex,quantile)$F["50%"]
-tapply(y,list(sex,bl_type),mean)
-aggregate(y,list(sex,bl_type),mean) # We don't really need to know `array`s.
-aggregate(y,list(sex),mean) # Without `list`, it results in an error
-aggregate(y~sex+bl_type, FUN=mean) # Using tilda. When using functions in R, you use tilda. Here, we use `+` instead of `list`. This way, all the column names are included.
+cat("\n\n")
+tapply(y, sex, sum)
+tapply(y, sex, mean)
+tapply(y, sex, var)
+tapply(y, sex, sd)
+tapply(y, sex, min)
+tapply(y, sex, max)
+cat("\n\n")
+tapply(y, sex, quantile)
+cat("\n\n")
+names(tapply(y, sex, quantile)$f)
+tapply(y, sex, quantile)$f["50%"]
+tapply(y, list(sex, bl_type), mean)
+cat("\n\n")
+aggregate(y, list(sex, bl_type), mean) # We don't really need to know `array`s.
+aggregate(y, list(sex), mean) # Without `list`, it results in an error
+aggregate(y ~ sex + bl_type, FUN = mean) # Using tilda. When using functions in R, you use tilda. Here, we use `+` instead of `list`. This way, all the column names are included.
 ```
