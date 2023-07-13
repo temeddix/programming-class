@@ -6,28 +6,30 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)  
-Sys.setlocale('LC_ALL','C')
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale("LC_ALL", "C")
 ```
 
 ```{r}
-exam<-read.csv("csv_exam.csv",header=FALSE,col.names=c("id","class","math","english","science"))
-exam$class<-as.factor(exam$class)  
+exam <- read.csv("csv_exam.csv", header = FALSE, col.names = c("id", "class", "math", "english", "science"))
+exam$class <- as.factor(exam$class)
 ```
+
 ## 9.3 arrange
 
-     - 정렬하기
+```         
+ - 정렬하기
+```
 
 Q1.math기준 오름차순으로 정렬하세요.
-      
+
 ```{r}
-library(dplyr)
+library(dplyr) # We need this library
 exam %>% arrange(math)
 ```
 
+Q2.math 기준 내림차순으로 정렬하세요.
 
-Q2.math 기준 내림차순으로 정렬하세요.  
-      
 ```{r}
 exam %>% arrange(desc(math))
 ```
@@ -35,91 +37,140 @@ exam %>% arrange(desc(math))
 Q3.class, math 기준으로 오름차순으로 정렬하세요.
 
 ```{r}
-exam %>% arrange(class,math)
+exam %>% arrange(class, math)
 ```
 
 ex1. math 50점 이상이고 (english 90점이상 또는 science 60점 이상)인 학생들을 class, math 순서대로 정렬하되, class는 오름차순, math는 내림차순으로 정렬하세요.
 
-```{r} 
+```{r}
 exam %>%
-  filter(math>=50 & (english>=90 | science>=60)) %>%
-  arrange(class,desc(math))
+  filter(math >= 50 & (english >= 90 | science >= 60)) %>%
+  arrange(class, desc(math))
 ```
-
 
 ## 9.4 mutate
 
-     - 파생변수를 추가로 만들기 
-     
-Q4. math, english, science 3과목의 총점을 구하여 total 이라는 변수와 total을 기준으로 순위를 매겨 ranking 이라는 변수를 생성하여라. 
-
-```{r}
-exam %>% mutate(total=math+english+science, ranking=rank(-total))
+```         
+ - 파생변수를 추가로 만들기 
+ 
 ```
 
- 
-Q5.위 total 변수를 기준으로 내림차순 정렬하세요. 
+Q4. math, english, science 3과목의 총점을 구하여 total 이라는 변수와 total을 기준으로 순위를 매겨 ranking 이라는 변수를 생성하여라.
 
-```{r} 
-exam %>% 
-  mutate(total=math+english+science, ranking=rank(-total)) %>% 
+```{r}
+exam %>% mutate(total = math + english + science, ranking = rank(-total))
+# `rank`, it can use the `total` variable declared here, on the fly
+# exam$total<-exam$math+exam$english+exam$science
+# exam$ranking<-rank(-exam$total)
+```
+
+Q5.위 total 변수를 기준으로 내림차순 정렬하세요.
+
+```{r}
+exam %>%
+  mutate(total = math + english + science, ranking = rank(-total)) %>%
   arrange(desc(total))
+# With `mutate`, you can receive the variable declared IN the statement itself, resulting in shorter syntax.
 ```
 
-Q6. 위 total 변수를 기준으로 내림차순으로 정렬한 후,   id, total,ranking 변수만 선택하세요. 
+Q6. 위 total 변수를 기준으로 내림차순으로 정렬한 후, id, total,ranking 변수만 선택하세요.
 
 ```{r}
-exam %>% 
-  mutate(total=math+english+science, ranking=rank(-total)) %>% 
-  arrange(desc(total)) %>% 
-  select(id,total,ranking)
+exam %>%
+  mutate(total = math + english + science, ranking = rank(-total)) %>%
+  arrange(desc(total)) %>%
+  select(id, total, ranking)
+# Using pipe connector `%>%`
 ```
- 
+
 Q7. 위 total 변수를 기준으로 내림차순으로 정렬한 후, class가 3반에 대해서 id, total,ranking 변수만 선택하세요.
 
-```{r} 
-exam %>% 
-  mutate(total=math+english+science, ranking=rank(-total)) %>% 
-  arrange(desc(total)) %>% 
-  filter(class=="3") %>% 
-  select(id,total,ranking)
-```
-ex2. math, english,science 3과목의 평균을 구하여 avg라는 변수를 생성하고, avg 값이 60점 이상이면 "pass", 미만이면 "fail" 이라는 문자열을 넣은 test라는 변수를 생성하여라. 
-
-      - ifelse 사용
-      
-```{r}  
-```
-ex3. 위 ex2의 결과를 exam1 데이터 프레임으로 저장하고, test의 "pass","fail"별 빈도수를 구하여라. 
-
-      - table, summary, aggregate, tapply 각각 사용해 보기 
-     
-```{r}  
-```
-
-
-
-ex4. mpg 데이터에서 "audi"에서 생산한 자동차 중 hwy가 1~5위에 해당하는 자동차의 데이터를 출력하세요.
- 
 ```{r}
+exam %>%
+  mutate(total = math + english + science, ranking = rank(-total)) %>%
+  arrange(desc(total)) %>%
+  filter(class == "3") %>%
+  select(id, total, ranking)
+```
+
+ex2. math, english,science 3과목의 평균을 구하여 avg라는 변수를 생성하고, avg 값이 60점 이상이면 "pass", 미만이면 "fail" 이라는 문자열을 넣은 test라는 변수를 생성하여라.
+
+```         
+ - ifelse 사용
+  
+```
+
+```{r}
+exam %>%
+  mutate(avg = (math + english + science) / 3, test = ifelse(avg >= 60, "pass", "fail"))
+```
+
+ex3. 위 ex2의 결과를 exam1 데이터 프레임으로 저장하고, test의 "pass","fail"별 빈도수를 구하여라.
+
+```         
+  - table, summary, aggregate, tapply 각각 사용해 보기 
  
 ```
-ex5. cty와 hwy를 더한 ‘합산 연비 변수’(plus_y)를 추가하여 mpg_data1 을 만드세요.
 
-ex6. 앞에서 만든 ‘합산 연비 변수’(plus_y)를 2로 나눠 ‘평균 연비 변수’(mean_y)를 추가하세요.
-
-ex7. ‘평균 연비 변수’(mean_y)가 가장 높은 상위  3개의 데이터(manufacturer, model, mean_y)를 출력하세요.
-
- 
 ```{r}
-#ex5
- 
-#ex6
- 
-#ex7
- 
+exam1 <- exam %>%
+  mutate(
+    avg = (math + english + science) / 3,
+    test = ifelse(avg >= 60, "pass", "fail")
+  )
+
+table(exam1$test)
+summary(as.factor(exam1$test))
+aggregate(exam1$test, list(exam1$test), length)
+# aggregate(id~test,length,data=exam1)
+tapply(exam1$test, exam1$test, length)
+# tapply(exam1$id, exam1$test, length)
+# IMPORTANT. These were introduced many times in the class
 ```
+
+ex4. mpg 데이터에서 "audi"에서 생산한 자동차 중 hwy가 1\~5위에 해당하는 자동차의 데이터를 출력하세요.
+
 ```{r}
-#ex5~ex7
- 
+library(ggplot2) # `mpg` data comes from here
+mpg %>%
+  filter(manufacturer == "audi") %>%
+  arrange(desc(hwy)) %>%
+  head(5)
+
+mpg %>%
+  filter(manufacturer == "audi") %>%
+  mutate(ranking = rank(-hwy)) %>%
+  filter(ranking <= 5)
+```
+
+ex5. cty와 hwy를 더한 '합산 연비 변수'(plus_y)를 추가하여 mpg_data1 을 만드세요.
+
+ex6. 앞에서 만든 '합산 연비 변수'(plus_y)를 2로 나눠 '평균 연비 변수'(mean_y)를 추가하세요.
+
+ex7. '평균 연비 변수'(mean_y)가 가장 높은 상위 3개의 데이터(manufacturer, model, mean_y)를 출력하세요.
+
+```{r}
+# ex5
+mpg_data1 <- mpg %>%
+  mutate(plus_y = cty + hwy)
+# ex6
+mpg_data1 <- mpg_data1 %>%
+  mutate(mean_y = plus_y / 2)
+# ex7
+mpg_data %>%
+  arrange(desc(mean_y)) %>%
+  select(manufacturer, model, mean_y) %>%
+  head(3)
+# You don't need to split these, it's also possisble to merge ex5~ex7 in one `%>%` chain
+```
+
+```{r}
+# ex5~ex7
+mpg_data <- mpg %>%
+  mutate(plus_y = cty + hwy) %>%
+  mutate(mean_y = plus_y / 2) %>%
+  arrange(desc(mean_y)) %>%
+  select(manufacturer, model, mean_y) %>%
+  head(3)
+mpg_data
 ```

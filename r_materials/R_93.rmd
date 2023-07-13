@@ -6,12 +6,12 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)  
-Sys.setlocale('LC_ALL','C')
+knitr::opts_chunk$set(echo = TRUE)
+Sys.setlocale("LC_ALL", "C")
 ```
 ```{r}
-exam<-read.csv("csv_exam.csv",header=FALSE,col.names=c("id","class","math","english","science"))
-exam$class<-as.factor(exam$class)  
+exam <- read.csv("csv_exam.csv", header = FALSE, col.names = c("id", "class", "math", "english", "science"))
+exam$class <- as.factor(exam$class)
 ```
 ## 9.5 summarise
 
@@ -21,114 +21,116 @@ Q1.math의 총 평균을 산출하세요.
       
 ```{r}
 library(dplyr)
-exam %>% summarise(mean_math=mean(math))
+exam %>% summarise(mean_math = mean(math))
+mean(exam$math)
 ```
 
 
 Q2. class별 math의 평균, 표준편차, 합계, 중앙값, 최소값, 최대값, 빈도수를 구하세요. 
       
 ```{r}
-exam %>% 
-  group_by(class) %>% 
-  summarise(avg=mean(math),SD=sd(math), total=sum(math), min_x=min(math),max_x=max(math), freq=n())
+exam %>%
+  group_by(class) %>%
+  summarise(avg = mean(math), SD = sd(math), total = sum(math), min_x = min(math), max_x = max(math), freq = n())
 ```
 
 Q3. science 점수 기준으로 60점이상이면 "pass" 미만이면 "fail" 이라는 test 변수를 생성하고, class, test 기준으로 math의 평균, 표준편차, 빈도수를 구하세요. 
 
 ```{r}
-exam %>% 
-  mutate(test=ifelse(science>=60,"pass","fail")) %>% 
-  group_by(class,test ) %>% 
-  summarise(avg=mean(math),SD=sd(math),freq=n())  
+exam %>%
+  mutate(test = ifelse(science >= 60, "pass", "fail")) %>%
+  group_by(class, test) %>%
+  summarise(avg = mean(math), SD = sd(math), freq = n())
+aggregate(math ~ class + test, data = exam1, mean)
 ```
  
      
 Q4. science 점수 기준으로 60점이상이면 "pass" 미만이면 "fail" 이라는 test 변수를 생성하고,  test, class 기준으로 math의 평균, 표준편차, 빈도수를 구하고, test, math의 평균기준으로 정렬하라(오름차순)
 
 ```{r}
-exam %>% 
-  mutate(test=ifelse(science>=60,"pass","fail")) %>% 
-  group_by(test,class ) %>% 
-  summarise(avg=mean(math),SD=sd(math),freq=n()) %>% 
-  arrange(test,avg)
+exam %>%
+  mutate(test = ifelse(science >= 60, "pass", "fail")) %>%
+  group_by(test, class) %>%
+  summarise(avg = mean(math), SD = sd(math), freq = n()) %>%
+  arrange(test, avg)
 ```
 
  
 Q5. id가 짝수인 학생에 대해서만, science 점수 기준으로 60점이상이면 "pass" 미만이면 "fail" 이라는 test 변수를 생성하고,  test 기준으로 math의 평균 , 표준편차, 빈도수를 구하여라.
 
 ```{r} 
-exam %>% 
-  filter(id%%2==0) %>%
-  mutate(test=ifelse(science>=60,"pass","fail")) %>% 
-  group_by(test  ) %>% 
-  summarise(avg=mean(math), SD=sd(math), freq=n()) 
+exam %>%
+  filter(id %% 2 == 0) %>%
+  mutate(test = ifelse(science >= 60, "pass", "fail")) %>%
+  group_by(test) %>%
+  summarise(avg = mean(math), SD = sd(math), freq = n())
 ```
 
 ex1. math, english, science 3과목의 총점을 구하여 total 이라는 변수를 생성하고, class내 total의 내림차순으로 ranking을 구하여 오름차순의 class, 내림차순의 total 기준으로 정렬하여라.
 
 ```{r}   
 exam %>%
-  mutate(total=math+english+science) %>% 
-  group_by(class) %>% 
-  mutate(ranking=rank(-total)) %>% 
-  arrange(class,desc(total))
+  mutate(total = math + english + science) %>%
+  group_by(class) %>%
+  mutate(ranking = rank(-total)) %>%
+  arrange(class, desc(total))
 ```
 ```{r}  
-ex1<-data.frame(x=c(rep("a",3), rep("b",3)), y=rep(c("a","b","c"),2), z=1:6)
+ex1 <- data.frame(x = c(rep("a", 3), rep("b", 3)), y = rep(c("a", "b", "c"), 2), z = 1:6)
 
-
-ex1 %>% summarise(first(x), last(x), nth(z,3))
+ex1 %>% summarise(first(x), last(x), nth(z, 3))
 ```
 ## 9.6 bind & join
 
 Q6. df1, df2을 row bind 하여라. 
 
 ```{r}
+df1 <- data.frame(Key = letters[1:5], data1 = seq(10, 14))
+df2 <- data.frame(Key = c("a", "b", "f"), data1 = seq(0, 2))
 
-df1<-data.frame(Key=letters[1:5],data1=seq(10,14))
-df2<-data.frame(Key=c("a","b","f"),data1=seq(0,2))
-
-bind_rows(df1,df2)
-
+bind_rows(df1, df2)
 ```
  
 Q7. df2의 data1을 data2로 변경하여 row bind 하여라. 
 
 ```{r}  
-names(df2)[2]<-'data2'
-bind_rows(df1,df2)
-#rbind는 에러가 났었음. 
+names(df2)[2] <- "data2"
+bind_rows(df1, df2)
+# `rbind` results in error
 ```
 
 Q8. df1, df3을 column bind 하여라. 
 
 ```{r}  
-df3<-data.frame(Key=LETTERS[1:5],data2=seq(0,4))
-bind_cols(df1,df3) 
+df3 <- data.frame(Key = LETTERS[1:5], data2 = seq(0, 4))
+bind_cols(df1, df3) # Makes new name
 ```
 
 Q9. df1에 df2을  left join 하여라. 
 
 ```{r}  
-left_join(df1,df2,by="Key")
+left_join(df1, df2, by = "Key")
 ```
 
 Q10. df2에 df1을 right join 하여라. 
 
 ```{r}  
-right_join(df1,df2,by="Key")
+right_join(df1, df2, by = "Key")
+# Actually, just switching two parameters with `left_join` is fine.
 ```
 
 Q11. df1과 df2을 inner join 하여라. 
 
 ```{r}  
-inner_join(df1,df2,by="Key")
+inner_join(df1, df2, by = "Key")
+# Only select the commons
 ```
 
 Q12. df1과 df2을 outer join 하여라. 
 
 ```{r}  
-full_join(df1,df2,by="Key")
+full_join(df1, df2, by = "Key")
+# Include all exclusives
 ```
 
 
@@ -136,7 +138,12 @@ ex2. exam 데이터 프레임에 반별 선생님 명단 데이터를 추가하�
 
       - names<-data.frame(class=c("1","2","3","4","5","기타"), teacher=c("Kim","Lee","Park","Choi","Jung","Chung"))
       
-```{r}   
+```{r}
+names <- data.frame(
+  class = c("1", "2", "3", "4", "5", "Others"),
+  teacher = c("Kim", "Lee", "Park", "Choi", "Jung", "Chung")
+)
+left_join(exam, names, by = "class")
 ```
 
 
@@ -147,9 +154,10 @@ Q13. exam 데이터 프레임에서 변수이름을 다음과 같이 바꾸려�
      - id-> Key, class->type 
   
 ```{r}   
-exam<-rename(exam, 
-       Key=id,
-       type=class)
+exam <- rename(exam,
+  Key = id,
+  type = class
+)
 
 head(exam)
 ```
@@ -158,34 +166,43 @@ ex3. exam 데이터 프레임에서 type별로 math, english, science의 총합 
 
 
 ```{r}    
+exam1 <- exam %>%
+  mutate(total = math + english + science) %>%
+  group_by(type) %>%
+  summarise(avt_total = mean(total))
+
+left_join(rename(exam, id = Key, class = type),
+  rename(exam1, class = type),
+  by = class
+)
 ```
 
 ex4. mpg데이터의 class별 cty평균을 구해 보세요.
 
-```{r}  
- 
+```{r}
+mpg_group <- mpg %>%
+  group_by(class) %>%
+  summarise(avg=mean(cty))
+mpg_group
 ```
 
 
 ex5. 앞 문제의 출력 결과를 cty평균이 높은 순으로 정렬해 출력하세요.
 
-```{r}   
- 
+```{r}
+mpg_group<-rename(mpg_group[2]<-"avg")
 ```
 
 
 ```{r}   
- 
 ```
 ex6. hwy 평균이 가장 높은 회사(manufacturer) 세 곳을 출력하세요.
 
 ```{r}   
- 
 ```
 ex7. 각 회사별 "compact" 의 차종 수를 내림차순으로 정렬해 출력하세요.
 
 ```{r}   
- 
 ```
 
 
@@ -197,14 +214,12 @@ fuel <- data.frame(fl = c("c", "d", "e", "p", "r"),
                    
                    
 ```{r} 
- 
 ```
 
                    
 ex9. 연료 가격 변수가 잘 추가됐는지 확인하기 위해 model, fl, price_fl 변수를 추출해 앞부분 5행을 출력해 보세요.   
                    
 ```{r} 
- 
 ```
 
 ex10. midwest데이터를 사용해 데이터 분석 문제를 해결해 보세요. (ggplot2 패키지에 있는 midwest)
@@ -212,26 +227,21 @@ ex10. midwest데이터를 사용해 데이터 분석 문제를 해결해 보세�
 1. popadults는 해당 지역의 성인 인구, poptotal은 전체 인구를 나타냅니다. midwest데이터에 ‘전체 인구 대비 미성년 인구 백분율’ 변수를 추가하세요.
               
 ```{r} 
- 
 ```
 
 2. 미성년 인구 백분율이 가장 높은 상위 5개 county의 미성년 인구 백분율을 출력하세요.
      
 ```{r} 
- 
 ```
 
 3. 아래의 기준에 따라 미성년 비율 등급 변수를 추가하고, 각 등급에 몇 개의 지역이 있는지 알아보세요.
 분류(grade) : large / middle / small
 기준 : 40%이상 / 30~40%미만 / 30%미만 
 ```{r} 
-
- 
 ```
 
 4. popasian은 해당 지역의 아시아인 인구를 나타냅니다. ‘전체 인구 대비 아시아인 인구 백분율’ 변수를 추가하고 하위 10개 지역의 state, county, 아시아인 인구 백분율을 출력하세요.
 
 
 ```{r} 
- 
 ```
