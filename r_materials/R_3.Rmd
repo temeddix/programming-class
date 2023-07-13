@@ -6,9 +6,9 @@ output:
 ---
 ```{r setup, include=FALSE}
 Sys.setlocale("LC_ALL", "en_US.UTF-8")
-options(encoding = 'UTF-8') 
+options(encoding = "UTF-8")
 Sys.setenv(LANG = "en_US.UTF-8")
-localeToCharset()  
+localeToCharset()
 ```
 #### Q.  my_list을 작성하라.
  
@@ -18,8 +18,8 @@ localeToCharset()
  
     - paste0(vector, collapse='') : vector의 value들이 붙여 한 문자열이 됨.
 ```{r}
-my_list=c('덩덕','쿵덕')
-str1=paste0(my_list, collapse='')
+my_list <- c("DD", "KD")
+str1 <- paste0(my_list, collapse = "") # `collapse` when the input is a vector
 str1
 ```
 
@@ -28,7 +28,7 @@ str1
     - rep, paste0을 사용
    
 ```{r}
-str2=paste0(rep('쿵덕',2), collapse='')
+str2 <- paste0(rep("KD", 2), collapse = "")
 str2
 ```
 
@@ -36,7 +36,7 @@ str2
 
     - rep, paste0을 사용
 ```{r}
-jajinmori=paste0(rep(c(str1,str2),2),collapse='')
+jajinmori <- paste0(rep(c(str1, str2), 2), collapse = "")
 jajinmori
 ```
 
@@ -50,22 +50,20 @@ jajinmori
 - c()로 생성된 vector는 숫자형 일때는 numeric, 하나라도 문자가 있으면 character
  
 ```{r}  
-a=c(1,2,3)
-class(a)  
+a <- c(1, 2, 3)
+class(a) # The output itself is a string
 
-a=seq(1.1,2.0,by=0.1)
+a <- seq(1.1, 2.0, by = 0.1)
 a
 class(a)
 ```
 
 ```{r} 
-a=c("a","b","c")
+a <- c("a", "b", "c")
 class(a)
 
-a=c(1,"b",3) 
-class(a) 
-a
-
+a <- c(1, "b", 3)
+class(a)
 ```
 
 ## 3.2 is. / as.
@@ -76,19 +74,26 @@ a
   
 
 ```{r}  
-a=c(1,2,3)
-is.numeric(a) ; is.integer(a) 
+a <- c(1, 2, 3)
+class(a)
+is.numeric(a)
+is.integer(a) # With `c()` syntax, it is `numeric`, not `integer`
 
-a=1:3
-is.numeric(a) ; is.integer(a) 
+a <- 1:3
+class(a)
+is.numeric(a) # With `n:n` syntax, it IS `integer`
+is.integer(a)
 ```
 
 ```{r}
-a=seq(1.1,2.0,by=0.1)
-is.numeric(a) ; is.integer(a) 
-  
-a=letters[1:3]
-is.character(a) ; is.numeric(a)
+a <- seq(1.1, 2.0, by = 0.1) # Unless `n:n`, the type is just `numeric`
+class(a)
+is.numeric(a)
+is.integer(a)
+
+a <- letters[1:3]
+is.character(a)
+is.numeric(a)
 ```
 
 - as. : 데이타 형식의 변경
@@ -97,21 +102,22 @@ is.character(a) ; is.numeric(a)
 
 
 ```{r}  
-a=c("1","2","3") 
+a <- c("1", "2", "3")
 as.numeric(a)
 
-a=1:3
+a <- 1:3
 as.character(a)
 
-a=seq(1.1,2.0,by=0.1)
+a <- seq(1.1, 2.0, by = 0.1)
 as.integer(a)
 ```
 
 - ex1. 요소 개수가 3개이면서 type이 numeric, logical, character 인 벡터들을 생성하라.
 
 ```{r}
-var1=0:2
+var1 <- 0:2
 as.numeric(var1)
+as.integer(var1)
 as.logical(var1)
 as.character(var1)
 ```
@@ -123,46 +129,46 @@ as.character(var1)
 - Q1. ("chung","lee","kang","park","song") 를 factor 형식으로 만들어라.
 
 ```{r}  
-family_name<-c("chung","lee","kang","park","song")
+family_name <- c("chung", "lee", "kang", "park", "song")
 class(family_name)
-```
-```{r}
-f_fn<-factor(family_name)
+
+f_fn <- factor(family_name)
 class(f_fn)
-```
-```{r}
+
 family_name
-f_fn
+f_fn # 'Level' means category
 ```
 
 - Q2. ("chung","lee","chung","kang","song","lee","park", "park","song") 를 factor 형식으로 만들어 summary 해 보아라.
 
 ```{r}  
-family_name<-c("chung","lee","chung","kang","song","lee","park", "park","song")
-family_name ; 
+family_name <- c("chung", "lee", "chung", "kang", "song", "lee", "park", "park", "song")
+family_name
 summary(family_name)
-```
-```{r}
-f_fn<-factor(family_name)
-f_fn ; 
-summary(f_fn)
+
+f_fn <- factor(family_name)
+f_fn
+summary(f_fn) # `summary` works well with a `factor` object
 ```
 
 - Q3. 위 ("chung","lee","chung","kang","song","lee","park", "park","song")별로 income이 (60,49,40,61,64,59,50,66,44)로 있을 때 ("chung","lee","kang","park","song")별로 income의 mean을 구하여라.
 
 ```{r}  
-incomes<-c(60,49,40,61,64,59,50,66,44)
-tapply(incomes,family_name,mean)
-tapply(incomes,family_name,sd)
-tapply(incomes,family_name,min)
-tapply(incomes,family_name,var)
-tapply(incomes,family_name,sum)
+# `tapply` means 'table apply'.
+# The data comes first, followed by the category name.
+# The function should come at the end.
+incomes <- c(60, 49, 40, 61, 64, 59, 50, 66, 44)
+tapply(incomes, family_name, mean)
+tapply(incomes, family_name, sd)
+tapply(incomes, family_name, min)
+tapply(incomes, family_name, var)
+tapply(incomes, family_name, sum)
 ```
 
 - is.factor, as.factor 사용 
 
 ```{r}  
-is.factor(family_name)
+is.factor(family_name) # Do NOT just do `factor()`.
 is.factor(f_fn)
 as.factor(family_name)
 ```
@@ -171,9 +177,10 @@ as.factor(family_name)
 
 
 ```{r} 
-var1=as.factor(c(1, 2, 3, 3, 4, NA, 3, 2, 4, 5, NA, 5))
+var1 <- as.factor(c(1, 2, 3, 3, 4, NA, 3, 2, 4, 5, NA, 5))
+# NA is preserved, but not included in the levels
 var1
-levels(var1) # Becomes string
+levels(var1) # Becomes string. This is not below `as` module
 ```
 
 - ex3. 다음의 데이타를 factor type으로 읽고, 월별로 몇개의 데이타가 있는지 구해보시오. 
@@ -182,7 +189,7 @@ levels(var1) # Becomes string
 
 
 ```{r}  
-var1=as.factor(c("March","April","January","November","January", "September","October","September","November","August","February", "January","November","November","February","May","August","February", "July","December","August","August","September","November","September", "February","April"))
+var1 <- as.factor(c("March", "April", "January", "November", "January", "September", "October", "September", "November", "August", "February", "January", "November", "November", "February", "May", "August", "February", "July", "December", "August", "August", "September", "November", "September", "February", "April"))
 summary(var1)
 ```
 - ex4. 어떤 학생들의 혈액형을 조사하니 다음과 같은 결과가 나왔다. 
@@ -190,28 +197,31 @@ c("A","O","AB","A","A","O","AB","A","AB")
 혈액형 타입 "A","B","O","AB" 를 level로 갖고 있는 factor 형식의 vector f_type변수를 만들어라. 
 
 ```{r}
-f_type=factor(c("A","O","AB","A","A","O","AB","A","AB"),
-levels=c("A","B","O","AB")) # It's possible to pass `levels` manually to `factor`
+f_type <- factor(c("A", "O", "AB", "A", "A", "O", "AB", "A", "AB"),
+  levels = c("A", "B", "O", "AB")
+) # It's possible to pass `levels` manually to `factor`
 f_type
 ```
 - 위 f_type에서 혈액형 타입별로 학생들의 수를 구하여라.
 
 ```{r}
+# `table`, `summary` and `tapply`
 table(f_type)
-summary(f_type)
-tapply(f_type,f_type,length) # `tapply` returns NA if no data are in it
-tapply(rep(1,length(f_type)),f_type,sum)
+summary(f_type) # `summary` is the most kindest. It even shows NA's.
+tapply(f_type, f_type, length) # NA comes out from `length` if no elements
+tapply(rep(1, length(f_type)), f_type, sum) # NA from `sum` too
 ```
 - 위 f_type에 오타로 첫번째 값이 잘못입력되었다.  f_type[1]의 값을 "B"로 입력하여라.
 
 ```{r}
-f_type[1]<-"B"
+f_type[1] <- "B"
 f_type
 ```
 
 ```{r}
-f_type[1]<-"C" # This leads to NA
+f_type[1] <- "C" # This leads to NA
 f_type
-levels(f_type)[3]<-"OOK" # Changing a level affects all values, because this is a `factor` object
+# Changing a level affects all values, because this is a `factor` object
+levels(f_type)[3] <- "OOK"
 f_type
 ```
