@@ -6,9 +6,9 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)  
+knitr::opts_chunk$set(echo = TRUE)
 Sys.setlocale("LC_ALL", "en_US.UTF-8")
-#Sys.setlocale('LC_ALL','C')
+# Sys.setlocale('LC_ALL','C')
 ```
 
 ## 7.1 조건문 : if / ifelse  
@@ -22,63 +22,96 @@ Sys.setlocale("LC_ALL", "en_US.UTF-8")
 
 - 가장 간단한 사용예 : if (조건문) {do} else {do}
 
-Q1. 돈이 있으면 택시를 타고, 돈이 없으면 걸어간다.
+Q1. 돈이 있으면 택시를 타고, 돈이 없으면 걸어가라.
 ```{r}
-money<-TRUE
- 
-if (money)  "택시를 탄다."   else  "걸어간다."  
-if (money) { "택시를 탄다."}   else  {
-  "걸어간다."  }
-ifelse(money ,  "택시를 탄다."  , "걸어간다.")
+money <- TRUE
+
+if (money) "Take a taxi" else "Just walk"
+if (money) {
+  "Take a taxi"
+} else {
+  "Just walk"
+}
+ifelse(money, "Take a taxi", "Just walk")
 ```
 
 Q2.돈이 3000원 이상 있거나 카드가 있다면 택시를 타고 그렇지 않으면 걸어가라.
 ```{r}
-money<-4000
-card<-FALSE 
+money <- 4000
+card <- FALSE
 
-if (money>=3000 | card) { "택시를 탄다." } else {
-   "걸어간다."  }
+if (money >= 3000 | card) {
+  "Take a taxi"
+} else {
+  "Just walk"
+}
 
-ifelse(money>=3000 | card ,  "택시를 탄다."  , "걸어간다.")
+ifelse(money >= 3000 | card, "Take a taxi", "Just walk")
 ```
 
 Q3.만약 주머니에 돈이 있으면 택시를 타고, 없으면 걸어가라.
 ```{r}
-pocket <-c("paper","cellphone","money")
-# %in% 다중 선택지에서 searching 할때 사용
-#if(sum("money"==pocket)>=1) 
+pocket <- c("paper", "cellphone", "money")
+# Used for using `%in%`
+# if(sum("money"==pocket)>=1)
 if ("money" %in% pocket) {
-   print("택시를 탄다.") ; a<-1
-   } else {
-   print("걸어간다." )
-   a<-0 
+  print("Take a taxi")
+  a <- 1
+} else {
+  print("Just walk")
+  a <- 0
+}
+a
+```
+
+```{r}
+ifelse(sum("money" == pocket) == 1, "Take a taxi", "Just walk")
+ifelse("money" %in% pocket, "Take a taxi", "Just walk")
+```
+
+```{r}
+a <- ifelse("money" %in% pocket,
+  {
+    "Take a taxi"
+    1
+  },
+  {
+    "Just walk"
+    0
   }
+)
 a
-```
-
-```{r}
-ifelse(sum("money"==pocket)==1,  "택시를 탄다."  , "걸어간다.")
-ifelse("money" %in% pocket,  "택시를 탄다."  , "걸어간다.")
-```
-
-```{r}
-a<-ifelse("money" %in% pocket,  { "택시를 탄다." ;  1}  , { "걸어간다." ; 0})
-a
-a<-ifelse("money" %in% pocket,  {   1;"택시를 탄다."}  , { "걸어간다." ; 0})
+a <- ifelse("money" %in% pocket,
+  {
+    1
+    "Take a taxi"
+  },
+  {
+    "Just walk"
+    0
+  }
+)
 a
 ```
 
 Q4.score가 60 이상일 경우 message에 문자열 'success', 아닐 경우 'failure'를 대입하라.
 ```{r}
-score<-50
-if (score>=60) {message<-'success'} else { message<-'failure'}
+score <- 50
+if (score >= 60) {
+  message <- "success"
+} else {
+  message <- "failure"
+}
 message
 
-message<-ifelse(score>=60,  'success' , 'failure')
+message <- ifelse(score >= 60, "success", "failure")
 message
 
-message<- if (score>=60) { 'success'} else {  'failure'}
+message <- if (score >= 60) {
+  "success"
+} else {
+  "failure"
+}
 message
 ```
 
@@ -87,20 +120,20 @@ message
 Q5.만약 주머니에 돈이 있거나, card가 있으면 택시를 타고 message에 "success"가 뜨게 하고, 
 그렇지 않으면 걸어가고 "failure"라는 message가 뜨게 하라.
 ```{r}
-
-pocket <-c("paper","cellphone","money1")
-card<-TRUE
-if ("money" %in% pocket)  { 
-  print("택시를 탄다.") 
-  message<-"success1"
-  } else if (card)   { 
-  print("택시를 탄다.") 
-  message<-"success2" 
-  } else  
-  { print("걸어간다.") ; message<-"failure" }
+pocket <- c("paper", "cellphone", "money1")
+card <- TRUE
+if ("money" %in% pocket) {
+  print("Take a taxi")
+  message <- "success1"
+} else if (card) {
+  print("Take a taxi")
+  message <- "success2"
+} else {
+  print("Just walk")
+  message <- "failure"
+}
 
 message
-
 ```
 ex0. 한 숫자를 입력받아, 0보다 작은 숫자이면 -1을 곱해 0보다 큰 숫자로 만들어라.
 
@@ -108,11 +141,15 @@ ex0. 한 숫자를 입력받아, 0보다 작은 숫자이면 -1을 곱해 0보�
     - if문장 사용
      
 ```{r}
-input<-as.numeric(readline(prompt='Enter a number: '))
-if (input<0) {output<-input*-1}
-#output<-ifelse(input<0, input*-1, input)
-#output<- if (input<0) input*-1 else input
-sprintf('The output is %.2f', output)
+input <- as.numeric(readline(prompt = "Enter a number: "))
+if (input < 0) {
+  output <- input * -1
+} else {
+  output <- input
+}
+# output<-ifelse(input<0, input*-1, input)
+# output<- if (input<0) input*-1 else input
+sprintf("The output is %.2f", output)
 ```
 
 
@@ -129,114 +166,107 @@ sprintf('The output is %.2f', output)
 
 
 Q6.열번찍어 안 넘어가는 나무 없다.
-나무를 찍은 횟수(treeHit) 가 10 보다 작으면 하나씩 증가
-만약, treeHit이 10번이면 print("나무가 넘어간다.")
+Hit the tree 찍은 횟수(treeHit) 가 10 보다 작으면 하나씩 증가
+만약, treeHit이 10번이면 print("Tree is going down")
 ```{r}
-treeHit<-0
+treeHit <- 0
 
-while (treeHit<10)
-  {
-  treeHit<-treeHit+1
-  if(treeHit==10) print("나무가 넘어간다.")
-  }
-treeHit 
-```
-
-Q7.앞의 문제에서 treeHit이 10보다 작으면 treeHit의 개수를 paste0를 이용하여 "나무를 ?번 찍었다."를 print 하여라.
-
-```{r}
-treeHit<-0
-while (treeHit<10)
-  {
-treeHit<-treeHit+1
-#1
-print(paste0("나무를 ",treeHit,"번 찍었다."))
-#2
-#print(sprintf("나무를 %d 번 찍었다.", treeHit))
-#3
-#cat("나무를",treeHit,"번 찍었다.","\n")
-if (treeHit==10 ) print("나무가 넘어간다.")
+while (treeHit < 10) {
+  treeHit <- treeHit + 1
+  if (treeHit == 10) print("Tree is going down")
 }
 
-# paste0 assumes that each items is a vector, and zips it
-print(paste0("A","B","C")) #You don't need to do collapse if each is singular
-print(paste0(letters[1:5],LETTERS[1:5]))
-print(paste0(letters[1:5],LETTERS[1:5], collapse=" "))
-print(paste0(letters[1:5],LETTERS[1:5], collapse=", "))
+treeHit
+```
+
+Q7.앞의 문제에서 treeHit이 10보다 작으면 treeHit의 개수를 paste0를 이용하여 "Hit the tree ?times"를 print 하여라.
+
+```{r}
+treeHit <- 0
+while (treeHit < 10) {
+  treeHit <- treeHit + 1
+  # 1
+  print(paste0("Hit the tree ", treeHit, "times"))
+  # 2
+  # print(sprintf("Hit the tree %d times", treeHit))
+  # 3
+  # cat("Hit the tree",treeHit,"times","\n")
+  if (treeHit == 10) print("Tree is going down")
+}
+
+# `paste0` assumes that each items is a vector, and zips it
+print(paste0("A", "B", "C")) # You don't need to do collapse if each is singular
+print(paste0(letters[1:5], LETTERS[1:5]))
+print(paste0(letters[1:5], LETTERS[1:5], collapse = " "))
+# `collapse` turns string vector into one string
+print(paste0(letters[1:5], LETTERS[1:5], collapse = ", "))
 ```
 
 Q8. 1부터 10까지의 숫자 중에서 홀수만 출력하라. (while 문장 이용)
 
 ```{r}
-a<-0
-while (a<10)
-{
-    a<-a+1
-    if (a%%2 == 1 ) print(a)  # a%%b는 a를 b로 나누었을 때 나머지, a%/%b 는 몫
+a <- 0
+while (a < 10) {
+  a <- a + 1
+  if (a %% 2 == 1) print(a) # a%%b is the remainder, a%/%b is the share
 }
 ```
 
 ```{r}
-a<-1
-while (a<11)
-{
-    if (a%%2 == 1 ) print(a)  # a%%b는 a를 b로 나누었을 때 나머지, a%/%b 는 몫
-    a<-a+1
+a <- 1
+while (a < 11) {
+  if (a %% 2 == 1) print(a)
+  a <- a + 1
 }
 ```
 
 ```{r}
-a<-0
-while (a<10)
-{
-    a<-a+1
-    if (a%%2 == 0 ) {}  
-    else print(a)  
+a <- 0
+while (a < 10) {
+  a <- a + 1
+  if (a %% 2 == 0) {} else print(a)
 }
 ```
 
 ```{r}
-a<-0
-while (a<10)
-{
-    a<-a+1
-    if (a%%2 == 0 )   next  # continue의 의미 
-    print(a)
+a <- 0
+while (a < 10) {
+  a <- a + 1
+  if (a %% 2 == 0) next # IMPORTANT: means `continue`
+  print(a)
 }
 ```
  
 - break 문장 : while 무한 루프에서 벗어날 수 있음 
 
 ```{r}
-coffee <-10
+coffee <- 10
 money <- 300
-while (money)
-{
-  print("돈을 받았으니 커피를 줍니다.")
-  coffee <- coffee -1
-  print(paste0("남은 커피의 양은 ", coffee,"개입니다." ))
-  if (coffee==0)  {
-    print("커피가 다 떨어졌습니다. 판매를 중지합니다.") 
+while (money) {
+  print("Sold a coffee.")
+  coffee <- coffee - 1
+  print(paste0("There are ", coffee, "coffee left."))
+  if (coffee == 0) {
+    print("The coffee has run out. Selling stopped.")
     break
   }
-} 
-
+}
 ```
 
 ex1. while 문장을 사용하여 1부터 1000까지의 자연수 중 3의 배수의 합을 구해보시오. 
 
 ```{r}
 ### With indexing
-a<-seq(1,1000)
-sum(a[a%%3==0])
+a <- seq(1, 1000)
+sum(a[a %% 3 == 0])
 ### Using `while`
-total<-0
-current<-1
-while (current<=1000) {
-  if (current%%3==0) {
-    total<-total+current
+total <- 0
+current <- 1
+while (current <= 1000) {
+  if (current %% 3 == 0) {
+    total <- total + current
   }
-  current<-current+1
+  current <- current + 1
 }
 sum
 ```
@@ -249,12 +279,12 @@ ex2. 1부터 5까지의 숫자를 입력받아, 별 계단을 만들려고 한�
      - readline, cat , while 문장을 사용한다. 
 
 ```{r}
-count<-as.integer(readline("How many lines do you want?: "))
-text<-""
-current<-1
-while (current<=count) {
+count <- as.integer(readline("How many lines do you want?: "))
+text <- ""
+current <- 1
+while (current <= count) {
   cat(rep("*", current), "\n")
-  current<-current+1
+  current <- current + 1
 }
 ```    
 
@@ -268,69 +298,72 @@ while (current<=count) {
 
 Q9. 1~10까지의 합을 구하시오.
 ```{r}
-total<-0 #초기화 
-for(i in 1:10) 
+total <- 0 # 초기화
+for (i in 1:10)
 {
-  total<-total+i
+  total <- total + i
 }
 total
 ```
 
-Q10. 60점 이상인 합격인 학생들에게만 print("몇번 학생 축하합니다. 합격입니다.") 문장을 프린트하라.
+Q10. 60점 이상인 합격인 학생들에게만 print("몇 student, congratulations. You passed.") 문장을 프린트하라.
 
 ```{r}
-marks<-c(90,25,67,45,80)
-id<-0
+marks <- c(90, 25, 67, 45, 80)
+id <- 0
 for (i in marks)
 {
-  id<-id+1
-  if(i<60) {next} 
-  #1
-  print(paste0(id, "번 학생 축하합니다. 합격입니다."))
-  #2
-  #print(sprintf("%d번 학생 축하합니다. 합격입니다.", id))
-  #3
-  #cat(id,"번 학생 축하합니다. 합격입니다.","\n")
+  id <- id + 1
+  if (i < 60) {
+    next
+  }
+  # 1
+  print(paste0(id, " student, congratulations. You passed."))
+  # 2
+  # print(sprintf("%d student, congratulations. You passed.", id))
+  # 3
+  # cat(id," student, congratulations. You passed.","\n")
 }
-
 ```
 
 ```{r}
-marks<-c(90,25,67,45,80)
+marks <- c(90, 25, 67, 45, 80)
 for (i in 1:length(marks))
 {
-  if(marks[i]<60) {next} 
-  print(paste0(i, "번 학생 축하합니다. 합격입니다."))
+  if (marks[i] < 60) {
+    next
+  }
+  print(paste0(i, " student, congratulations. You passed."))
 }
-
 ```
 
 ```{r}
-marks<-c(90,25,67,45,80)
+marks <- c(90, 25, 67, 45, 80)
 seq_along(marks)
 ```
 
 ```{r} 
-marks<-c(90,25,67,45,80) 
+marks <- c(90, 25, 67, 45, 80)
 for (i in seq_along(marks))
-{ 
-  if(marks[i]<60) {next} 
-  print(paste0(i, "번 학생 축하합니다. 합격입니다."))
+{
+  if (marks[i] < 60) {
+    next
+  }
+  print(paste0(i, " student, congratulations. You passed."))
 }
-
 ```
 ex3. 위 while 문제의 3의 배수의 합 문제를 for 문장을 이용해서 구해보자. 
 
 ```{r} 
 ### Using `for`
-total<-0
-group<-c()
+total <- 0
+group <- c()
 for (current in 1:1000) {
-  if (current%%3==0) {
-    total<-total+current
-    group<-c(group, current)
+  if (current %% 3 == 0) {
+    total <- total + current
+    group <- c(group, current)
   }
-  current<-current+1
+  current <- current + 1
 }
 total
 group # Extra task
@@ -342,20 +375,20 @@ for 문장을 사용하여 A학급의 평균과 표준편차를 구해 보자. (
 70,60,55,75,95,90,80,80,85,100
 
 ```{r}
-scores<-c(70,60,55,75,95,90,80,80,85,100)
-n<-length(scores)
-total<-0
-for (score in scores){
-  total<-total+score
+scores <- c(70, 60, 55, 75, 95, 90, 80, 80, 85, 100)
+n <- length(scores)
+total <- 0
+for (score in scores) {
+  total <- total + score
 }
-score_mean<-total/n
+score_mean <- total / n
 score_mean
-var_total<-0
-for (score in scores){
-  var_total<-var_total+(score-score_mean)^2
+var_total <- 0
+for (score in scores) {
+  var_total <- var_total + (score - score_mean)^2
 }
-variation<-var_total/(n-1)
-std_variation<-variation^0.5
+variation <- var_total / (n - 1)
+std_variation <- variation^0.5
 std_variation
 sd(scores)
 ```
@@ -366,15 +399,15 @@ ex5. 다음은 A학급 학생의 점수이다. 50점 이상 점수의 총합을 
 
 
 ```{r}
-scores<-c(20,55,67,82,45,33,90,87,100,25)
-total<-0
+scores <- c(20, 55, 67, 82, 45, 33, 90, 87, 100, 25)
+total <- 0
 for (i in 1:length(scores)) {
-  score<-scores[i]
-  if (score>=50) total<-total+score
+  score <- scores[i]
+  if (score >= 50) total <- total + score
 }
 total
 ### Another way
-sum(scores[scores>=50])
+sum(scores[scores >= 50])
 ```
  
     
