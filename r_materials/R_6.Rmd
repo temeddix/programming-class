@@ -6,7 +6,7 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "C")
 ```
  
 ## 6.1 Data Frame 생성 
@@ -21,14 +21,19 @@ Sys.setlocale('LC_ALL','C')
 
 - Q1. A변수는 a,b,c,d,e,  B변수는 1,2,3,4,5로 이루어진 dataframe을 생성하시오. 
 ```{r}
-d1<-data.frame(A=letters[1:5], B=1:5,stringsAsFactors=TRUE) #A,B변수 : A는 문자, B는 숫자형. Giving `stringsAsFactors`, it takes strings as factors, whose deafult value is FALSE. 
+d1 <- data.frame(A = letters[1:5], B = 1:5, stringsAsFactors = TRUE)
+# A,B parameters : A is characters, B is numeric.
+# Giving `stringsAsFactors`, it takes strings as factors,
+# whose default value is FALSE.
 d1
 ```
 
 ```{r}
-str(d1) #data frame structure
+str(d1) # data frame structure
+cat("\n\n")
 nrow(d1)
 ncol(d1)
+cat("\n\n")
 summary(d1) # Remember the difference of `str` and `summary`
 ```
  
@@ -37,12 +42,12 @@ summary(d1) # Remember the difference of `str` and `summary`
 
 ```{r}
 names(d1)
-names(d1)<-c("Var1","Var2")
+names(d1) <- c("Var1", "Var2") # This is why they call it `names`, not `columns`
 str(d1)
 ```
 
 ```{r}
-names(d1)[2]<-c("B") #2번째 변수 이름만 바꾸기 
+names(d1)[2] <- "B" # Only change the second name
 str(d1)
 ```
 
@@ -53,18 +58,17 @@ str(d1)
   | apple     | 1800 | 24    |
   |strawberry | 1500 | 38    |
   |watermelon | 3000 | 13    |
-  
-  
+
 
 ```{r}
-fruits<-data.frame(
-  prod=c('apple','strawberry','watermelon'),
-  price=c(1800,1500,3000),
-  sales=c(24,38,13),
+fruits <- data.frame(
+  prod = c("apple", "strawberry", "watermelon"),
+  price = c(1800, 1500, 3000),
+  sales = c(24, 38, 13),
   stringsAsFactors = TRUE
 )
 fruits
-str(fruits)  # Structure, not string
+str(fruits) # Structure, not string
 ```
   
 ## 6.2 Indexing 방법
@@ -77,26 +81,27 @@ str(fruits)  # Structure, not string
 
 ```{r}
 d1
-d1[1,] #1행 # Row 1, all columns
-d1[,1] #1열 ,즉 Var1 변수 전체 # All rows, column 1
-d1$Var1  # Using dollar sign is the most common way
-d1[,"Var1"] # Not recommended but possible
+d1[1, ] # 1<U+D589> # Row 1, all columns
+d1[, 1] # 1<U+C5F4> ,<U+C989> Var1 <U+BCC0><U+C218> <U+C804><U+CCB4> # All rows, column 1
+d1$Var1 # Using dollar sign is the most common way
+d1[, "Var1"] # Not recommended but possible
 ```
 
 
 ```{r}
-d1$B   #B 변수 전체 
-d1[c(1,3,5),] #1,3,5번째 행 
-d1[c(1,3,5),1] #1,3,5번째 행의 Var1 변수값  또는, d1$Var1[c(1,3,5)] 
-d1[c(1,3,5),"Var1"]
-d1$Var1[c(1,3,5)]
+d1
+d1$B # All of 'B' column
+d1[c(1, 3, 5), 1] # 1,3,5th row with column 1.
+d1[c(1, 3, 5), "Var1"] # For columns, name OR index are both possible
+d1$Var1[c(1, 3, 5)]
+d1[c(1, 3, 5), ] # 1,3,5th rows
 ```  
 
 
 ```{r}
 d1
-d1[-1,] #1행 제외한 나머지 
-d1[,-1] #1열 제외한 나머지 
+d1[-1, ] # All except row 1
+d1[, -1] # All except column 1. becomes a simple vector
 summary(d1)
 ```
 
@@ -121,30 +126,30 @@ mean(fruits$sales)
   | 5      | 8    |   1  |
 
 ```{r}
-col_df<-data.frame(
-  col1=c(1,4,3,4,5),
-  col2=c(4,5,6,7,8),
-  cole=c(7,8,9,0,1)
+col_df <- data.frame(
+  col1 = c(1, 4, 3, 4, 5),
+  col2 = c(4, 5, 6, 7, 8),
+  cole = c(7, 8, 9, 0, 1)
 )
-col_df[col_df$col1==4,]
-subset(col_df, col_df$col1==4)
-subset(col_df, col1==4)
-subset(col_df, col1==4, select=col2)
+col_df[col_df$col1 == 4, ]
+subset(col_df, col_df$col1 == 4)
+subset(col_df, col1 == 4) # `subset` is ready to just accept the column name
+subset(col_df, col1 == 4, select = col2) # There's even `select`
 ```
 
 - ex2_2. 위 col_df에서 col1이 4인 경우의 행 전체를 제거하는 프로그램을 작성하라. 
 
 ```{r}
-col_df<-col_df[col_df$col1!=4,]
-col_df[!col_df$col1==4,]
-subset(col_df,col1!=4)
+col_df[col_df$col1 != 4, ]
+col_df[!col_df$col1 == 4, ]
+subset(col_df, col1 != 4)
 ```
 - ex2_3.위 데이터프레임 자료형 예제에서 처음 3개만 선택하는 프로그램을 작성하라
 
 ```{r}
-col_df[1:3,] # In R, the range end in INCLUSIVE
-head(col_df,3) # 3 rows
-tail(col_df,3) # 3 rows
+col_df[1:3, ] # In R, the range end is INCLUSIVE
+head(col_df, 3) # 3 rows
+tail(col_df, 3) # 3 rows
 ```
 
 
@@ -155,17 +160,19 @@ tail(col_df,3) # 3 rows
 - 변수 제거 :  dataframe$변수 <-NULL
 
 ```{r}
-d1$Var3<-c(rep(TRUE,3), rep(FALSE,2)) # Just like `list`s
+d1 <- data.frame(Var1 = letters[1:5], B = 1:5, stringsAsFactors = TRUE)
+d1$Var3 <- c(rep(TRUE, 3), rep(FALSE, 2)) # Just like `list`s
 d1
-d1$B<-NULL  # d1<-d1[,-2]
+d1$B <- NULL # d1<-d1[,-2]
 d1
-d1<-subset(d1, select=-Var1) # Var1 변수 제거
+d1 <- subset(d1, select = -Var1) # Remove 'Var1'
+d1
 ```
 
 - ex3. 위 "과일" 문제에서 총 판매액(가격x판매량)을 추가 하시오. 
 
 ```{r}
-fruits$revenue<-fruits$sales*fruits$price
+fruits$revenue <- fruits$sales * fruits$price
 fruits
 ```
 
@@ -180,22 +187,20 @@ fruits
 - Q3.cars라는 데이타를 attach하여 각 변수의 통계를 내어보자. 
 
 ```{r}
-head(cars) # R 내부에 있는 data , speed (of cars) , dist (stopping distance)
-head(cars$dist/cars$speed) # data frame의 각 열을 지칭할 때 cars$ 를 사용
-
+head(cars)
+head(cars$dist / cars$speed)
 ```
 
 ```{r}
-#dist<-c(1:10)
-#speed<-c(101:110)
-attach(cars) # cars data frame을 attach
-head(dist/speed)
+# dist<-c(1:10)
+# speed<-c(101:110)
+attach(cars) # Attach the dataframe `cars`
+head(dist / speed)
 mean(speed)
 mean(dist)
-detach(cars) # attach 해제
+detach(cars) # Detach
 
-#mean(speed) #error 
-
+# mean(speed) #error
 ```
 
 
@@ -230,46 +235,47 @@ head(cars)
 
 ```{r}
 getwd()
-#setwd("c:/jonghee/y_stat/R")
-#getwd()
+# setwd("c:/jonghee/y_stat/R")
+# getwd()
 ```
 
 ```{r}
-write.table(cars, "cars.txt", sep=" " ) #구분자 space, row name 포함
+write.table(cars, "cars.txt", sep = " ") # Including spacing and row name
 ```
 
 -Q5. cars 데이타를 변수 구분자 space, row name이 포함되지 않게 cars1.txt에 저장하시오. 
 ```{r}
-write.table(cars, "cars1.txt",sep=" " , row.name=FALSE) #구분자 space, row name 미포함
+write.table(cars, "cars1.txt", sep = " ", row.name = FALSE)
+# Without spacing and row name
 ```
 
 -Q6. cars 데이타를 변수 구분자 ",", row name이 포함되지 않게 cars1.csv에 저장하시오. 
 ```{r}
-write.csv(cars, "cars1.csv", row.names=FALSE) #구분자 ",", row name 미포함 
+write.csv(cars, "cars1.csv", row.names = FALSE) # Divider ",", Without row name
 ```
 
 
 -Q7. cars1.csv을 읽어오시오. 
 ```{r}
-j_cars_1<- read.csv("cars1.csv") #header 포함, 구분자 ",", row name 포함 
+j_cars_1 <- read.csv("cars1.csv") # With header, Divider ",", with row name
 head(j_cars_1)
 # read.csv returns data.frame
 ```
 
 ```{r}
-j_cars_2<- read.csv("cars1.csv", header=FALSE, skip=1) #header 미포함, 2번째 row 부터 읽기
+j_cars_2 <- read.csv("cars1.csv", header = FALSE, skip = 1) # Without header, reading from line 2
 head(j_cars_2)
 ```
 
 -Q8. cars.txt을 읽어오시오. 
 ```{r}
-j_cars_3<- read.table("cars.txt",skip=1, sep=" ") #2번째 row 부터 , 구분자 space, row name도 변수로 읽혀짐 
+j_cars_3 <- read.table("cars.txt", skip = 1, sep = " ") # From row 2, with spacing, row name as var
 head(j_cars_3)
 # read.table also returns data.frame
 ```
 
 ```{r}
-j_cars_4<- read.table("cars.txt",skip=1, row.names=1, sep=" ") #첫번째 열을 row name으로 
+j_cars_4 <- read.table("cars.txt", skip = 1, row.names = 1, sep = " ") # First column as row name
 head(j_cars_4)
 ```
 
@@ -279,23 +285,21 @@ nrow(cars) #
 
 
 ```{r}
-a<-paste0(rep(letters,2),1:52)
+a <- paste0(rep(letters, 2), 1:52)
 a
 ```
 
 ```{r}
-j_cars_5<- read.table("cars1.txt", row.names=a[1:50], header=TRUE, sep=" ") #row name을 새로 정해서 
+j_cars_5 <- read.table("cars1.txt", row.names = a[1:50], header = TRUE, sep = " ") # Newly define row names
 head(j_cars_5)
-j_cars_5["a1",]
+j_cars_5["a1", ]
 ```
 ```{r}
-row.names(j_cars_5)[1]<-"A01"
+row.names(j_cars_5)[1] <- "A01"
 head(j_cars_5)
 ```
 
 - ex4. 위 "과일" 문제의 최종 data frame을 csv 파일로 내보내기를 하시오. 
 
 ```{r} 
-
-
 ```
