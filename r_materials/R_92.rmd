@@ -25,19 +25,20 @@ Q1.math기준 오름차순으로 정렬하세요.
 
 ```{r}
 library(dplyr) # We need this library
-exam %>% arrange(math)
+exam %>% arrange(math) # Column keyword is possible here
 ```
 
 Q2.math 기준 내림차순으로 정렬하세요.
 
 ```{r}
-exam %>% arrange(desc(math))
+desc(exam$math)
+exam %>% arrange(desc(math)) # Just memorize `arrange(desc(v))`
 ```
 
 Q3.class, math 기준으로 오름차순으로 정렬하세요.
 
 ```{r}
-exam %>% arrange(class, math)
+exam %>% arrange(class, math) # Two columns
 ```
 
 ex1. math 50점 이상이고 (english 90점이상 또는 science 60점 이상)인 학생들을 class, math 순서대로 정렬하되, class는 오름차순, math는 내림차순으로 정렬하세요.
@@ -59,7 +60,7 @@ Q4. math, english, science 3과목의 총점을 구하여 total 이라는 변수
 
 ```{r}
 exam %>% mutate(total = math + english + science, ranking = rank(-total))
-# `rank`, it can use the `total` variable declared here, on the fly
+# `rank` can use the `total` variable declared in `mutate`, on the fly
 # exam$total<-exam$math+exam$english+exam$science
 # exam$ranking<-rank(-exam$total)
 ```
@@ -119,12 +120,17 @@ exam1 <- exam %>%
     test = ifelse(avg >= 60, "pass", "fail")
   )
 
-table(exam1$test)
-summary(as.factor(exam1$test))
+table(exam1$test) # table(vector)
+summary(as.factor(exam1$test)) # summary(factor)
+tapply(exam1$test, exam1$test, length) # tapply(vector, vector, function)
+tapply(exam1$id, exam1$test, length)
+
+# You can just pass in anonymous vectors to `aggregate`
 aggregate(exam1$test, list(exam1$test), length)
-# aggregate(id~test,length,data=exam1)
-tapply(exam1$test, exam1$test, length)
-# tapply(exam1$id, exam1$test, length)
+# Or, to use column keywords with tilda(~) in `aggregate`,
+# you need to provide the `data`
+aggregate(id ~ test, length, data = exam1)
+
 # IMPORTANT. These were introduced many times in the class
 ```
 
@@ -139,7 +145,7 @@ mpg %>%
 
 mpg %>%
   filter(manufacturer == "audi") %>%
-  mutate(ranking = rank(-hwy)) %>%
+  mutate(ranking = rank(-hwy)) %>% # Remember the `rank` function
   filter(ranking <= 5)
 ```
 
@@ -150,6 +156,9 @@ ex6. 앞에서 만든 '합산 연비 변수'(plus_y)를 2로 나눠 '평균 연�
 ex7. '평균 연비 변수'(mean_y)가 가장 높은 상위 3개의 데이터(manufacturer, model, mean_y)를 출력하세요.
 
 ```{r}
+# Nothing in R mutates itself.
+# Even the `mutate` function returns a new value
+
 # ex5
 mpg_data1 <- mpg %>%
   mutate(plus_y = cty + hwy)
@@ -161,7 +170,9 @@ mpg_data %>%
   arrange(desc(mean_y)) %>%
   select(manufacturer, model, mean_y) %>%
   head(3)
-# You don't need to split these, it's also possisble to merge ex5~ex7 in one `%>%` chain
+
+# Actually, you don't need to split these,
+# it's also possible to merge ex5~ex7 in one `%>%` chain
 ```
 
 ```{r}
@@ -172,5 +183,6 @@ mpg_data <- mpg %>%
   arrange(desc(mean_y)) %>%
   select(manufacturer, model, mean_y) %>%
   head(3)
+
 mpg_data
 ```
