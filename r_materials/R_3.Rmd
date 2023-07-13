@@ -219,9 +219,9 @@ f_type
 ```
 
 ```{r}
-f_type[1] <- "C" # This leads to NA
-f_type
 # Changing a level affects all values, because this is a `factor` object
 levels(f_type)[3] <- "OOK"
+f_type
+f_type[1] <- "C" # This leads to NA
 f_type
 ```
