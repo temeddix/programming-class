@@ -7,7 +7,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-Sys.setlocale('LC_ALL','C')
+Sys.setlocale("LC_ALL", "C")
 ```
 
 ## R Install 
@@ -26,7 +26,7 @@ summary(cars)
 - history 기능 : 키보드에 있는 화살표 위/아래로 전에 입력한 명령어를 찾을 수 있음
 - 함수에 대한 help 명령어 : ?함수이름 ex) ?summary
 
-```{r }
-?summary
+```{r}
+?summary # With ? at the front, you can read the guides of this object
 ```
  
